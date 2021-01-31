@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,8 +58,8 @@ Route::get('data/flagged/{operationID}', 'DataController@flagData');
 
 
 // All profile information will display here
-Route::get('qumatiks/data', 'QumatikDataController@index');
-Route::get('qumatiks/data/{imei}', 'QumatikDataController@show');
+Route::get('qumatiksdata/data', [Controllers\QumatikDataController::class, 'index']);
+
 
 
 Route::get('registeruser', 'HomeController@register');
