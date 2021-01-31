@@ -18,20 +18,17 @@ class QumatikDataController extends Controller{
      */
     public function index($imei){
         // AUTHENTICATE WITH DROPBOX
-         $this->dispatch(new BuoyCreateJob());
+         $this->dispatch(new BuoyCreateJob($imei));
         return "Completed";
     }
 
 
 
 
-    public function show($id){
+    public function show($qumatikId){
         // Fetch the qumatik dropbox dir information
-        $qumatik = Qumatik::where('imei', $id)->first();
-
-
-
-
+        $datas = QumatikData::where('qumatik_id', $qumatikId)->get();
+        dd($datas);
     }
 
 }

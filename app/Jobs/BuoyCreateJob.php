@@ -21,11 +21,13 @@ class BuoyCreateJob implements ShouldQueue
      *
      * @return void
      */
+    protected $imei;
 
 
 
-    public function __construct(){
+    public function __construct($imei){
         //
+        $this->imei = $imei;
     }
 
     /**
@@ -39,15 +41,13 @@ class BuoyCreateJob implements ShouldQueue
         $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
 
         // GET the exact qumatik information
-        $qumatik = Qumatik::where('imei', $imei)->first();
+        $qumatik = Qumatik::where('imei', $this->imei)->first();
 
         // LOOP THROUGH ALL THE QUMATIKS AND FETCH DATA FROM THAT FOLDER
         // FIND THE LIST OF FOLDERS
         $folders = $client->listFolder($qumatik->dropbox_dir);
-        dd($folders);
         $counter = 0;
         foreach ($folders['entries'] as $index => $folder){
-            $counter++;
             // fetch all the files in that folder
             $files = $client->listFolder($folder['path_display']);
 
@@ -57,7 +57,7 @@ class BuoyCreateJob implements ShouldQueue
 
             // check the file size, if its more that 3MB then download later.
             if ($files["entries"][$index]["size"] > 2000000){
-
+                $counter++;
                 QumatikData::create([
                     "filename"              =>  $files['entries'][$index]['name'],
                     "filepath"              =>  $files['entries'][$index]['path_display'],
@@ -102,8 +102,6 @@ class BuoyCreateJob implements ShouldQueue
                 $data = json_decode($datas);
                 // INSETING INTO THE DATABASE
 
-                echo "DOne <br/>";
-
                 QumatikData::create([
                     "filename"              =>  $data->filename,
                     "filepath"              =>  $data->filepath,
@@ -122,7 +120,6 @@ class BuoyCreateJob implements ShouldQueue
                 ]);
             }
 
-            Log:info("DATA INSERTED!!");
         }
     }
 
