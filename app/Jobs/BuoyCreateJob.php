@@ -38,75 +38,92 @@ class BuoyCreateJob implements ShouldQueue
         $client = new Client(["fu65xsevq0k1zkj", "h4ys4vbczp1hpjd"]);
         $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
 
-
-
-        // GET THE LIST OF QUMATIKS INFORMATION
-        $qumatiks = Qumatik::all();
+        // GET the exact qumatik information
+        $qumatik = Qumatik::where('imei', $imei)->first();
 
         // LOOP THROUGH ALL THE QUMATIKS AND FETCH DATA FROM THAT FOLDER
         // FIND THE LIST OF FOLDERS
-        $folders = $client->listFolder($qumatiks[0]->dropbox_dir);
+        $folders = $client->listFolder($qumatik->dropbox_dir);
+        dd($folders);
+        $counter = 0;
         foreach ($folders['entries'] as $index => $folder){
+            $counter++;
             // fetch all the files in that folder
             $files = $client->listFolder($folder['path_display']);
 
             $file_index = array_column($files['entries'], 'name');
             $index = key(preg_grep( '([Log])', array_values($file_index)));
 
-            $log_file_path = $files['entries'][$index]['path_display'];
-            $download = $client->contentEndpointRequest('files/download', ['path' => $log_file_path]);
+
+            // check the file size, if its more that 3MB then download later.
+            if ($files["entries"][$index]["size"] > 2000000){
+
+                QumatikData::create([
+                    "filename"              =>  $files['entries'][$index]['name'],
+                    "filepath"              =>  $files['entries'][$index]['path_display'],
+                    "rho0"                  =>  NULL,
+                    "rho1"                  =>  NULL,
+                    "rho2"                  =>  NULL,
+                    "em31Height"            =>  NULL,
+                    "datas"                 =>  NULL,
+                    "filesize"              =>  $files["entries"][$index]["size"],
+                    'qumatik_id'            =>  (int) $qumatik->id
+                ]);
 
 
-            // TESTING: /Installations/Arcticbay/SmartQAMUTIK/incoming/Smart-Qamutik-20180410114241/Log-20180410114241.txt
 
-            // fetch the content
-            $content = $download->getBody()->getContents();
+            }else{
+                $log_file_path = $files['entries'][$index]['path_display'];
+                $download = $client->contentEndpointRequest('files/download', ['path' => $log_file_path]);
 
-            // start_time, end_time, average ice thickness
-            $content = explode("\r\n", $content);
-            array_pop($content);
+                // fetch the content
+                $content = $download->getBody()->getContents();
 
-            /*
-            Fetching the settings data from contents
-            ===========================================================
-            Params: contents first line. (string)
-            */
-            $settings = $this->getingRH0data(
-                $files['entries'][$index]['name'],
-                $files['entries'][$index]['path_display'],
-                $content[1]);
+                // start_time, end_time, average ice thickness
+                $content = explode("\r\n", $content);
+                array_pop($content);
 
-            // unsetting/deleting 0 - 2 rows
-            unset($content[0], $content[1], $content[2]);
-            $content = (array) array_values($content);
-            $datas = $this->gettingData($settings, $content);
+                /*
+                Fetching the settings data from contents
+                ===========================================================
+                Params: contents first line. (string)
+                */
+                $settings = $this->getingRH0data(
+                    $files['entries'][$index]['name'],
+                    $files['entries'][$index]['path_display'],
+                    $content[1]);
 
-//                // Decode the Data json
-            $data = json_decode($datas);
-//                // INSETING INTO THE DATABASE
+                // unsetting/deleting 0 - 2 rows
+                unset($content[0], $content[1], $content[2]);
+                $content = (array) array_values($content);
+                $datas = $this->gettingData($settings, $content);
 
-            dd($data);
-//
+                // Decode the Data json
+                $data = json_decode($datas);
+                // INSETING INTO THE DATABASE
 
-            QumatikData::create([
-                "filename"              =>  $data->filename,
-                "filepath"              =>  $data->filepath,
-                "rho0"                  =>  $data->rho0,
-                "rho1"                  =>  $data->rho1,
-                "rho2"                  =>  $data->rho2,
-                "em31Height"            =>  $data->em31Height,
-                "avg_ice_thickness"     =>  $data->avg_ice_thickness,
-                "min_ice_thickness"     =>  $data->min_ice_thickness,
-                "max_ice_thickness"     =>  $data->max_ice_thickness,
-                "datas"                 =>  json_encode($data->datas),
-                "start_time"            =>  $data->start_time,
-                "end_time"              =>  $data->end_time,
-                'qumatik_id'            =>  1
-            ]);
+                echo "DOne <br/>";
+
+                QumatikData::create([
+                    "filename"              =>  $data->filename,
+                    "filepath"              =>  $data->filepath,
+                    "rho0"                  =>  $data->rho0,
+                    "rho1"                  =>  $data->rho1,
+                    "rho2"                  =>  $data->rho2,
+                    "em31Height"            =>  $data->em31Height,
+                    "avg_ice_thickness"     =>  $data->avg_ice_thickness,
+                    "min_ice_thickness"     =>  $data->min_ice_thickness,
+                    "max_ice_thickness"     =>  $data->max_ice_thickness,
+                    "datas"                 =>  json_encode($data->datas),
+                    "start_time"            =>  $data->start_time,
+                    "end_time"              =>  $data->end_time,
+                    "filesize"              =>  $files["entries"][$index]["size"],
+                    'qumatik_id'            =>  (int) $qumatik->id
+                ]);
+            }
 
             Log:info("DATA INSERTED!!");
         }
-        return "Done";
     }
 
 
@@ -170,6 +187,7 @@ class BuoyCreateJob implements ShouldQueue
         }
         return $settings;
     }
+
 
 
 

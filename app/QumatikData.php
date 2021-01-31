@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class QumatikData extends Model{
     //
+    protected $table = 'qumatik_data';
+
     protected $fillable = [
         'filename',
         'filepath',
@@ -19,6 +21,7 @@ class QumatikData extends Model{
         'datas',
         'start_time',
         'end_time',
+        'filesize',
         'qumatik_id'
     ];
 }

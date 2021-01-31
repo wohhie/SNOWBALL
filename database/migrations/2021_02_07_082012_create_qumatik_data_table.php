@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQumatikData extends Migration
+class CreateQumatikDataTable extends Migration
 {
     /**
      * Run the migrations.
@@ -21,12 +21,13 @@ class CreateQumatikData extends Migration
             $table->decimal('rho1', 8, 4)->nullable()->default('0.0');
             $table->decimal('rho2', 8, 4)->nullable()->default('0.0');
             $table->decimal('em31Height', 8, 4)->nullable()->default('0.0');
-            $table->decimal('avg_ice_thickness', 8, 4)->nullable()->default('0.0');
-            $table->decimal('min_ice_thickness', 8, 4)->nullable()->default('0.0');
-            $table->decimal('max_ice_thickness', 8, 4)->nullable()->default('0.0');
-            $table->json('datas');
-            $table->string('start_time');
-            $table->string('end_time');
+            $table->decimal('avg_ice_thickness', 8, 4)->nullable();
+            $table->decimal('min_ice_thickness', 8, 4)->nullable();
+            $table->decimal('max_ice_thickness', 8, 4)->nullable();
+            $table->json('datas')->nullable();
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
+            $table->bigInteger('filesize')->nullable();
             $table->unsignedBigInteger('qumatik_id');
             $table->foreign('qumatik_id')->references('id')->on('qumatiks');
             $table->timestamps();

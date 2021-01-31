@@ -85,6 +85,9 @@ class QumatikController extends Controller{
      */
     public function show(Qumatik $qumatik){
         //
+        dd("Display all the information");
+        dd($qumatik->imei);
+
     }
 
     /**

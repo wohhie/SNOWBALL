@@ -58,7 +58,7 @@ Route::get('data/flagged/{operationID}', 'DataController@flagData');
 
 
 // All profile information will display here
-Route::get('qumatiksdata/data', [Controllers\QumatikDataController::class, 'index']);
+Route::get('qumatiksdata/data/{imei}', [Controllers\QumatikDataController::class, 'index']);
 
 
 
