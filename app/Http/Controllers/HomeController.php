@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Buoy;
+use App\Qumatik;
 use App\Role;
 use App\Summery;
 use App\User;
@@ -34,22 +35,25 @@ class HomeController extends Controller{
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index(Request $request){
-
         $request->user()->authorizeRoles(['operator', 'manager']);
 
         // per page fetch 10 items
         $buoys = Buoy::all();
+        $qumatiks = Qumatik::all();
 
 
 
-        // Check active buoys
+        // Check active buoys and qumatiks
         $active_buoys = Buoy::where('status', 1)->count();
+        $active_qumatiks = Qumatik::where('status', 1)->count();
 
-        // Check inactive buoys
+        // Check inactive buoys and qumatiks
         $inactive_buoys = Buoy::where('status', 0)->count();
+        $inactive_qumatiks = Qumatik::where('status', 0)->count();
 
         // Dashboard total information
         $total_buoys = Buoy::all()->count();
+        $total_qumatiks = Qumatik::all()->count();
         // for pagination
         // $index = $buoys->currentPage() * $buoys->perPage() - $buoys->perPage() + 1;
 
@@ -60,11 +64,15 @@ class HomeController extends Controller{
 
 
         return view('backend.pages.index', compact(
-    'total_buoys',
-         'active_buoys',
-            'buoys',
-            'users',
+            'total_buoys',
+            'total_qumatiks',
+            'active_buoys',
+            'active_qumatiks',
             'inactive_buoys',
+            'inactive_qumatiks',
+            'buoys',
+            'qumatiks',
+            'users',
             'index'));
     }
 
