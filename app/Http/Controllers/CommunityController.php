@@ -72,10 +72,11 @@ class CommunityController extends Controller{
      * Show the form for editing the specified resource.
      *
      * @param  \App\Community  $community
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(Community $community){
-        //
+        $community = Community::find($community->id);
+        return view('layouts.communities.edit', compact('community'));
     }
 
     /**
@@ -83,10 +84,13 @@ class CommunityController extends Controller{
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Community  $community
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Community $community){
-        //
+        $community->update($request->all());
+        notify()->info($community->name . " updated successfully", "Community", "topRight");
+        return redirect()
+            ->route('communities.index');
     }
 
     /**

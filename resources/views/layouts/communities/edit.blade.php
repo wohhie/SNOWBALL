@@ -36,13 +36,13 @@
                 </ul>
             </div><br />
         @endif
-        <form role="form" method="post" action="{{ route('community.update', ['id'=>$community->id]) }}">
+        <form role="form" method="post" action="{{ route('communities.update', ['id'=>$community->id]) }}">
             @csrf
             @method('PUT')
 
             <div class="box-body">
 
-            
+
 
                 <div class="form-group">
                     <label for="name">Community Name</label>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                
+
             </div>
             <!-- /.box-body -->
 
