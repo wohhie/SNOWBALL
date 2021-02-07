@@ -1,21 +1,20 @@
 @extends('backend.layouts.starter')
-@section('title') All SmartQUMATIK
+@section('title') All Communities
 @endsection
 @section('headIncludes')
     <!-- Custom Style -->
     <link rel="stylesheet" href="{{ asset('css/custom-style.css') }}">
-
 @endsection
 
 @section('bodyClass')class="hold-transition skin-blue sidebar-mini"@endsection
 @section('contentHeader')
 <!-- Content Header (Page header) -->
 <section class = "content-header">
-<h1> SmartQUMATIK Information <small>all SmartQUMATIK</small>   </h1>
+<h1> Communities Information <small>All Communities</small>   </h1>
 
 <ol class="breadcrumb">
     <li><a href="/admin"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-    <li class="active">SmartQUMATIK Information</li>
+    <li class="active">Communities Information</li>
   </ol>
 
   <div class = 'row'>
@@ -23,54 +22,47 @@
 
         <div class = "box">
         <div class="box-header">
-                    <h3 class="box-title custom-button">SmartQUMATIK Information</h3>
-                    <a href="{{ route('qumatiks.create') }}" class="btn btn-success pull-right custom-button">Create New SmartQUMATIK <i class="fa fa-plus"></i></a>
+                    <h3 class="box-title custom-button">Communities Information</h3>
+                    <a href="{{ route('communities.create') }}" class="btn btn-success pull-right custom-button">Create New Communities <i class="fa fa-plus"></i></a>
                 </div>
 
                 <div class="box-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="community_table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>SN</th>
-                            <th>IMEI</th>
-                            <th>Community Name</th>
+                            <th>Communities Name</th>
                             <th>Latitude</th>
                             <th>Longitude</th>
-                            <th>Status</th>
-                            <th>Dropbox Directory</th>
-                            <th>Activated Date</th>
+                            <th>Status Date</th>
                             <th>Action</th>
+
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($qumatiks as $index=>$qumatik)
+                        @forelse($communities as $index=>$community)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td><b><a href="{{ URL('/email/'. $qumatik->serialNo )}}">{{ $qumatik->imei }}</a></b></td>
-								<td>{{ $qumatik->community->name }}</td>
+								<td>{{ $community->name }}</td>
 
-                                <td>{{ $qumatik->latitude }}</td>
-                                <td>{{ $qumatik->longitude }}</td>
-                                <td><span class="label label-{{ ($qumatik->status == 0) ? 'danger' : 'success' }}">{{ ($qumatik->status == 0) ? 'In Active' : 'Active' }}</span></td>
-                                <td>{{ $qumatik->dropbox_dir }}</td>
-                                <td>{{ $qumatik->created_at }}</td>
+                                <td>{{ $community->latitude }}</td>
+                                <td>{{ $community->longitude }}</td>
+                                <td>{{ $community->created_at }}</td>
                                 <td>
+                                    <form action="{{ route('communities.destroy',$community->id) }}" method="POST">
+                                        <a class="btn btn-success" href="{{ URL('/email/'.$community->id )}}"><i class="fa fa-eye"></i></a>
+                                        <a class="btn btn-primary" href="{{ route('communities.edit', ['id'=>$community->id]) }}"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-danger" href="#" data-toggle="modal" data-target=".delete-{{$community->id}}"><i class="fa fa-trash"></i></a>
 
-
-                                    <form action="{{ route('qumatiks.destroy',$qumatik->id) }}" method="POST">
-                                        <a class="btn btn-success" href="{{ URL('/email/'.$qumatik->imei )}}"><i class="fa fa-eye"></i></a>
-                                        <a class="btn btn-primary" href="{{ route('qumatiks.edit', ['id'=>$qumatik->id]) }}"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger" href="#" data-toggle="modal" data-target=".delete-{{$qumatik->imei}}"><i class="fa fa-trash"></i></a>
-
-                                        <div class="modal fade delete-{{$qumatik->imei}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                        <div class="modal fade delete-{{$community->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                             <div class="modal-dialog modal-md" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <h4 class="modal-title" id="myModalLabel">Delete <b>#{{ $qumatik->imei }}</b>!</h4>
+                                                        <h4 class="modal-title" id="myModalLabel">Delete <b>#{{ $community->id }}</b>!</h4>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <h4>Are you sure you want to delete this QUMATIK <b>#{{ $qumatik->imei }}</b></h4>
+                                                        <h4>Are you sure you want to delete this community <b>{{ $community->name }}</b></h4>
 
                                                         @csrf
                                                         @method('DELETE')
@@ -98,14 +90,13 @@
             </div>
             <!-- /.box -->
         </div>
+        <!-- /.col -->
     </div>
 </section>
 @endsection
 
 @section('content')
-<?php
-    $test = "chinal";
-?>
+
 @endsection
 
 @section('scriptIncludes')
@@ -121,7 +112,7 @@
 
 <script type="text/javascript">
     $(function () {
-        $('#example1').DataTable({
+        $('#community_table').DataTable({
             'paging'      : true,
             'lengthChange': true,
             'searching'   : true,
@@ -131,8 +122,5 @@
             'pageLength'  : 25,
         })
     })
-
-
-
 </script>
 @endsection

@@ -110,7 +110,7 @@ class QumatikController extends Controller
      */
     public function update(Request $request, Qumatik $qumatik){
         $qumatik->update($request->all());
-        notify()->info("SmartQUMATIK updated successfully!!","SmartQUMATIK","topRight");
+        notify()->info(" updated successfully!!","SmartQUMATIK","topRight");
         return redirect()->route('qumatiks.index');
     }
 

@@ -42,6 +42,8 @@ Route::get('/pulldata', 'PullDataController@index')->name('Pull Data from Server
 // Buoy Information
 Route::resource('buoys', 'BuoyController')->middleware('auth');
 Route::resource('qumatiks', 'QumatikController')->middleware('auth');
+Route::resource('communities', 'CommunityController')->middleware('auth');
+
 Route::get('/buoy/summary/{id}', 'BuoyController@summary');
 Route::get('/buoy/summary/{imei}/{month}/{year}', 'BuoyController@updateSummary');
 // Data

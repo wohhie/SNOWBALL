@@ -44,7 +44,6 @@
                 </ul>
             </li>
 
-
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-life-ring"></i>
@@ -54,6 +53,19 @@
                 <ul class="treeview-menu">
                     <li><a href="/qumatiks/create"><i class="fa fa-circle-o"></i>Create Qumatik</a></li>
                     <li><a href="/qumatiks"><i class="fa fa-circle-o"></i>View Qumatiks</a></li>
+                </ul>
+            </li>
+
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-users"></i>
+                    <span>Communities</span>
+                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('communities.create') }}"><i class="fa fa-circle-o"></i>Create Community</a></li>
+                    <li><a href="{{ route('communities.index') }}"><i class="fa fa-circle-o"></i>View Communities</a></li>
                 </ul>
             </li>
 

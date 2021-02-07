@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                             <div class="form-group">
-                                    <label for="imei">IMEI Number</label>
+                                    <label for="imei">{{ __('IMEI Number') }} <span class="asterisk">*</span></label>
                                     <input type="text" class="form-control" id="imei" name="imei" placeholder="Enter imei number" required>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
 
                             <div class="col-lg-2">
                                 <div class="form-group">
-                                    <label for="version">Version</label>
+                                    <label for="version">{{ __('Version') }}</label>
                                     <select class="form-control" name="version" id="version">
                                         @for($index = 1.0; $index < 9.0; $index++)
                                             <option value="{{ $index . ".0" }}">{{ $index . ".0" }}</option>
@@ -66,7 +66,7 @@
 
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="imei">Manufacturing Year</label>
+                                    <label for="imei">{{ __('Manufacturing Year') }}</label>
                                     <select class="form-control" name="manufacturing_year" id="manufacturing_year">
                                         @for($index = 2015; $index <= 2035; $index++)
                                             <option value="">{{ $index }}</option>
@@ -79,7 +79,7 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="community_id">Community Name</label>
+                                    <label for="community_id">{{ __('Community Name') }}</label>
                                     <select class="form-control" required name="community_id">
                                         <option value="0" disabled selected>Select</option>
                                         @foreach($communities as $community)
@@ -90,14 +90,14 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="latitude">Latitude</label>
+                                    <label for="latitude">{{ __('Latitude') }}</label>
                                     <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter initial latitude">
                                 </div>
                             </div>
 
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="longitude">Longitude</label>
+                                    <label for="longitude">{{ __('Longitude') }}</label>
                                     <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter initial longitude">
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
 
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="back_office">Back to Office</label>
+                                    <label for="back_office">{{ __('Back to Office') }}</label>
                                     <select class="form-control" name="back_office" id="back_office">
                                         <option selected value="1">Yes</option>
                                         <option value="0">No</option>
@@ -117,7 +117,7 @@
 
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="status">Status</label>
+                                    <label for="status">{{ __("Status") }}</label>
                                     <select class="form-control" name="status" id="status">
                                         <option value="0">In Active</option>
                                         <option selected value="1">Active</option>
@@ -127,8 +127,8 @@
 
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <label for="dropbox_dir">Dropbox Directory</label>
-                                    <input type="text" class="form-control" id="dropbox_dir" name="dropbox_dir" placeholder="Enter Dropbox Directory" required>
+                                    <label for="dropbox_dir">{{ __("Dropbox Directory") }}</label>
+                                    <input type="text" class="form-control" id="dropbox_dir" name="dropbox_dir" placeholder="" required>
                                 </div>
                             </div>
 
