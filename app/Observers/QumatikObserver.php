@@ -33,6 +33,8 @@ class QumatikObserver
         Redis::set('qumatiks:all', $qumatiks);
     }
 
+
+
     /**
      * Handle the qumatik "deleted" event.
      *
