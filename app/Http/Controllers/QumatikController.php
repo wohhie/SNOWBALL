@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 
-class QumatikController extends Controller
-{
+class QumatikController extends Controller{
     /**
      * Display a listing of the resource.
      *

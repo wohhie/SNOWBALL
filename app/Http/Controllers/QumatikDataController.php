@@ -9,19 +9,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Spatie\Dropbox\Client;
 
-class QumatikDataController extends Controller
-{
+class QumatikDataController extends Controller{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index(){
-
+        dd("DONE");
         // AUTHENTICATE WITH DROPBOX
 //        $this->dispatch(new BuoyCreateJob());
-
-
 
         $client = new Client(["fu65xsevq0k1zkj", "h4ys4vbczp1hpjd"]);
         $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
@@ -42,8 +39,6 @@ class QumatikDataController extends Controller
         }
         return "Done";
     }
-
-
 
 
     /**
@@ -108,70 +103,8 @@ class QumatikDataController extends Controller
 
 
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(){
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\QumatikData  $qumatikData
-     * @return \Illuminate\Http\Response
-     */
-    public function show(QumatikData $qumatikData)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\QumatikData  $qumatikData
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(QumatikData $qumatikData)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\QumatikData  $qumatikData
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, QumatikData $qumatikData)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\QumatikData  $qumatikData
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(QumatikData $qumatikData)
-    {
-        //
+    public function show($id){
+        dd($id);
     }
 
 }

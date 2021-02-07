@@ -46,7 +46,7 @@
                         @forelse($qumatiks as $index=>$qumatik)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td><b><a href="{{ URL('/email/'. $qumatik->serialNo )}}">{{ $qumatik->imei }}</a></b></td>
+                                <td><b><a href="{{ URL('/qumatiks/data/'. $qumatik->imei )}}">{{ $qumatik->imei }}</a></b></td>
 								<td>{{ $qumatik->community->name }}</td>
 
                                 <td>{{ $qumatik->latitude }}</td>
