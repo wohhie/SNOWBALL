@@ -213,7 +213,7 @@
                                                 <tr>
                                                     <td>{{ $index++ }}</td>
                                                     <td>
-                                                        <b><a href="{{ route('qumatikdata.show', $qumatik->imei) }}">{{ $qumatik->imei}}</a></b>
+                                                        <b><a href="{{ route('qumatikdata.show', $qumatik->id) }}">{{ $qumatik->imei}}</a></b>
                                                     </td>
                                                     <td>{{ $qumatik->community['name'] }}</td>
 
