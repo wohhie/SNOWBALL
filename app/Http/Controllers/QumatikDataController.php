@@ -10,7 +10,7 @@ class QumatikDataController extends Controller{
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return string
      */
     public function index($imei){
         // AUTHENTICATE WITH DROPBOX
@@ -26,6 +26,9 @@ class QumatikDataController extends Controller{
         $qumatikDatas = QumatikData::where('qumatik_id', $qumatikId)->get();
         return view('layouts.qumatiks.qumatikdata', compact('qumatikDatas'));
     }
+
+
+
 
 
 
