@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\BuoyCreateJob;
-use App\Qumatik;
 use App\QumatikData;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Spatie\Dropbox\Client;
-use Symfony\Component\VarDumper\Dumper\DataDumperInterface;
+use FarhanWazir\GoogleMaps\GMaps;
 
 class QumatikDataController extends Controller{
     /**
@@ -34,6 +30,42 @@ class QumatikDataController extends Controller{
 
 
     public function location(QumatikData $id){
-        dd("Location");
+        $qumatikDatas = json_decode($id->datas);
+
+        $coordinates = array();
+        foreach($qumatikDatas as $index => $data) {
+            array_push($coordinates,$data->latitude . ',' .$data->longitude  );
+        }
+
+
+        $config['center'] = $coordinates[0];
+        $config['zoom'] = 'auto';
+        $config['map_height'] = '1000px';
+        $config['scrollwheel'] = false;
+
+        $gmap = new GMaps();
+        $gmap->initialize($config);
+
+        $marker['position'] = $coordinates[0];
+        $marker['infowindow_content'] = 'Starting Point';
+        $marker['icon'] = 'http://maps.google.com/mapfiles/kml/paddle/red-circle.png';
+        $gmap->add_marker($marker);
+
+        $marker['position'] =  $coordinates[1];
+        $marker['infowindow_content'] = 'Ending Point';
+        $marker['icon']='http://maps.google.com/mapfiles/kml/paddle/grn-circle.png';
+        $gmap->add_marker($marker);
+
+
+        $polyline = array();
+        $polyline['points'] = $coordinates;
+        $gmap->add_polyline($polyline);
+
+
+
+        $map = $gmap->create_map();
+
+        return view('layouts.qumatiks.map', compact('map'));
     }
+
 }

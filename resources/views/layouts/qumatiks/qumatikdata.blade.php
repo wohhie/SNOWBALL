@@ -65,7 +65,7 @@
                                     @if (empty($data->rho0) && empty($data->rho1) && empty($data->rho2))
                                         <a href="#" class="btn btn-primary  btn-xs" data-toggle="tooltip" data-placement="top" title="Sync Now"><i class="fa fa-download"></i></a>
                                     @else
-                                        <a href="{{ route('qumatikdata.location', $data->id) }}" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Location"><i class="fa fa-location-arrow"></i></a>
+                                        <a href="{{ route('qumatiksdata.location', $data->id) }}" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Location"><i class="fa fa-location-arrow"></i></a>
                                     @endif
                                 </td>
                             </tr>
