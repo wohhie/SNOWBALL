@@ -23,9 +23,7 @@ class QumatikDataController extends Controller{
 
     public function show($qumatikId){
         // Fetch the qumatik dropbox dir information
-        $testing = "chinal";
-        $testing2 = "chinal";
-        $testing3 = "chinal";
+        $testing = "chinal Saif";
         $qumatikDatas = QumatikData::where('qumatik_id', $qumatikId)->get();
         return view('layouts.qumatiks.qumatikdata', compact('qumatikDatas'));
     }
