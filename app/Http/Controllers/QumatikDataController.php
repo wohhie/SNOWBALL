@@ -31,4 +31,9 @@ class QumatikDataController extends Controller{
         return view('layouts.qumatiks.qumatikdata', compact('qumatikDatas'));
     }
 
+
+
+    public function location(QumatikData $id){
+        dd("Location");
+    }
 }

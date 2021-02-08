@@ -60,9 +60,6 @@ Route::get('data/edit/{operationID}', 'DataController@editData');
 Route::get('data/flagged/{operationID}', 'DataController@flagData');
 
 
-// All profile information will display here
-Route::get('qumatiksdata/data/{imei}', [Controllers\QumatikDataController::class, 'index']);
-
 
 
 Route::get('registeruser', 'HomeController@register');
@@ -103,8 +100,10 @@ Route::resource(
 
 
 
-
+// All profile information will display here
 Route::resource('/qumatikdata', QumatikDataController::class);
+Route::get('qumatiksdata/data/{imei}', [Controllers\QumatikDataController::class, 'index']);
+Route::get('qumatiksdata/location/{id}', [Controllers\QumatikDataController::class, 'location']);
 
 
 
