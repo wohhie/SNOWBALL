@@ -58,7 +58,7 @@ class BuoyCreateJob implements ShouldQueue
             // check the file size, if its more that 3MB then download later.
             if ($files["entries"][$index]["size"] > 2000000){
                 $counter++;
-                QumatikData::create([
+                QumatikData::insert([
                     "filename"              =>  $files['entries'][$index]['name'],
                     "filepath"              =>  $files['entries'][$index]['path_display'],
                     "rho0"                  =>  NULL,
@@ -67,10 +67,10 @@ class BuoyCreateJob implements ShouldQueue
                     "em31Height"            =>  NULL,
                     "datas"                 =>  NULL,
                     "filesize"              =>  $files["entries"][$index]["size"],
-                    'qumatik_id'            =>  (int) $qumatik->id
+                    'qumatik_id'            =>  (int) $qumatik->id,
+                    'created_at'            =>  now()->toDateTimeString(),
+                    'updated_at'            =>  now()->toDateTimeString(),
                 ]);
-
-
 
             }else{
                 $log_file_path = $files['entries'][$index]['path_display'];
@@ -102,7 +102,8 @@ class BuoyCreateJob implements ShouldQueue
                 $data = json_decode($datas);
                 // INSETING INTO THE DATABASE
 
-                QumatikData::create([
+
+                QumatikData::insert([
                     "filename"              =>  $data->filename,
                     "filepath"              =>  $data->filepath,
                     "rho0"                  =>  $data->rho0,
@@ -116,7 +117,9 @@ class BuoyCreateJob implements ShouldQueue
                     "start_time"            =>  $data->start_time,
                     "end_time"              =>  $data->end_time,
                     "filesize"              =>  $files["entries"][$index]["size"],
-                    'qumatik_id'            =>  (int) $qumatik->id
+                    'qumatik_id'            =>  (int) $qumatik->id,
+                    'created_at'            =>  now()->toDateTimeString(),
+                    'updated_at'            =>  now()->toDateTimeString(),
                 ]);
             }
 
@@ -184,8 +187,5 @@ class BuoyCreateJob implements ShouldQueue
         }
         return $settings;
     }
-
-
-
 
 }

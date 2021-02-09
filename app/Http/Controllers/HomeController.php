@@ -57,8 +57,6 @@ class HomeController extends Controller{
         // for pagination
         // $index = $buoys->currentPage() * $buoys->perPage() - $buoys->perPage() + 1;
 
-
-        $index = 1;
         // Getting user information
         $users = User::all()->count();
 
@@ -72,8 +70,7 @@ class HomeController extends Controller{
             'inactive_qumatiks',
             'buoys',
             'qumatiks',
-            'users',
-            'index'));
+            'users'));
     }
 
 

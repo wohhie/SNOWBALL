@@ -103,7 +103,9 @@ Route::resource(
 // All profile information will display here
 Route::resource('/qumatikdata', QumatikDataController::class);
 Route::get('qumatiksdata/data/{imei}', [Controllers\QumatikDataController::class, 'index']);
-Route::get('qumatiksdata/location/{id}', [Controllers\QumatikDataController::class, 'location'])->name('qumatiksdata.location');;
+Route::get('qumatiksdata/location/{id}', [Controllers\QumatikDataController::class, 'location'])->name('qumatiksdata.location');
+Route::get('qumatiksdata/download/{id}', [Controllers\QumatikDataController::class, 'download'])->name('qumatiksdata.download');
+Route::get('qumatiksdata/download/{id}', [Controllers\QumatikDataController::class, 'downloadBackground'])->name('qumatiksdata.downloadBackground');
 
 
 

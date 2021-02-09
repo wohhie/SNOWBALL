@@ -147,10 +147,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($buoys as $buoy)
+
+                                    @forelse($buoys as $index => $buoy)
                                         @if($buoy->status == 1)
                                             <tr>
-                                                <td>{{ $index++ }}</td>
+                                                <td>{{ ++$index }}</td>
                                                 <td><b><a href="{{ URL('/email/'.$buoy->imei )}}">{{ $buoy->imei }}</a></b>
                                                 </td>
                                                 <td>{{ $buoy->community['name'] }}</td>
@@ -208,10 +209,10 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($qumatiks as $qumatik)
+                                        @forelse($qumatiks as $index => $qumatik)
                                             @if($qumatik->status == 1)
                                                 <tr>
-                                                    <td>{{ $index++ }}</td>
+                                                    <td>{{ ++$index }}</td>
                                                     <td>
                                                         <b><a href="{{ route('qumatikdata.show', $qumatik->id) }}">{{ $qumatik->imei}}</a></b>
                                                     </td>
