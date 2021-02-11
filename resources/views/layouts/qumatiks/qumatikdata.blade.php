@@ -62,11 +62,43 @@
                                 <td>{{ $data->end_time }}</td>
                                 <td><span class="badge badge-primary">{{ ceil($data->filesize / 1048576) }} MB</span></td>
                                 <td>
-                                    @if (empty($data->rho0) && empty($data->rho1) && empty($data->rho2))
-                                        <a href="{{ route('qumatiksdata.download', $data->id) }}" class="btn btn-primary  btn-xs" data-toggle="tooltip" data-placement="top" title="Sync Now"><i class="fa fa-download"></i></a>
-                                    @else
-                                        <a href="{{ route('qumatiksdata.location', $data->id) }}" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Location"><i class="fa fa-location-arrow"></i></a>
-                                    @endif
+                                    <a href="#location_modal"
+                                       id="location_modal"
+                                       class="btn btn-success btn-xs location__modal"
+                                       data-filename="{{ $data->filename }}"
+                                       data-filepath="{{ $data->filepath }}"
+                                       data-id="{{ $data->id }}"
+                                       data-toggle="modal"
+                                       data-target="#location_modal_{{ $data->id }}">
+                                        <i class="fa fa-location-arrow"></i>
+                                    </a>
+
+                                    <div class="modal fade" id="location_modal_{{ $data->id }}" data-id="{{ $data->id }}" tabindex="-1" role="dialog" aria-labelledby="Distance calculator" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                                        <div class="modal-dialog modal-xl" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title" id="myModalLabel">{{ str_replace(".txt", "", $data->filename) }}</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div id="overlay_{{ $data->id }}">
+                                                        <div class="cv-spinner">
+                                                            <span class="spinner"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Delete Now</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
                                 </td>
                             </tr>
                         @empty
@@ -84,11 +116,7 @@
 </section>
 @endsection
 
-@section('content')
-<?php
-    $test = "chinal";
-?>
-@endsection
+
 
 @section('scriptIncludes')
 <!-- Js -->
@@ -112,6 +140,36 @@
             'autoWidth'   : true,
             'pageLength'  : 25,
         })
+
+
+        $(document).on("click", ".location__modal", function () {
+            let filepath = $(this).data('filepath')
+            let id = $(this).data('id')
+            // Add remove loading class on body element based on Ajax request status
+            $(document).on({
+                ajaxStart: function(){
+                    $("#overlay_" + id).fadeIn(300);
+                },
+                ajaxStop: function(){
+                    $("#overlay_" + id).fadeOut(300);
+                }
+            });
+
+
+            $.ajax({
+                url: "/qumatiksdata/location",
+                type: "get",
+                data: { filepath },
+                success:function(response){
+                    // TODO: generate the google map with the value
+                    console.log(response);
+                },
+            })
+
+
+
+        })
+
     })
 
 

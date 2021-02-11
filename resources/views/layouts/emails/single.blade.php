@@ -39,11 +39,11 @@
 
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title custom-button"> Data Information 
+                        <h3 class="box-title custom-button"> Data Information
 								<span class="label label-default">{{ $operationID }}</span>
 {{--                            <span class="label label-{{ ($dataInfos[0]->status == 0) ? 'warning': 'success' }}">{{ ($dataInfos[0]->status == 0) ? 'Unprocessed': 'Processed' }}</span>--}}
                         </h3>
-						
+
 						<br/>
 						<br/>
                         {{-- $summaries status 1 = updated to SIKU and 0 = pending for manager--}}
@@ -669,9 +669,6 @@
                                                     <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <!--
-                                                    Todo: check its temperature | Conductivity
-                                                    -->
                                                     <h4>Your submission will be directed to your manager.</h4>
                                                     <p>Check again if you make any misstakes</p>
                                                 </div>

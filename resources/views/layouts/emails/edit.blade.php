@@ -666,9 +666,6 @@
                                                 <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
                                             </div>
                                             <div class="modal-body">
-                                                <!--
-                                                Todo: check its temperature | Conductivity
-                                                -->
                                                 <h4>Do you want to approve this process and forward to
                                                     <img class=" siku" src="{{ asset('images/siku_splash_logo.png') }}" alt="">
                                                 </h4>

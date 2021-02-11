@@ -6,6 +6,7 @@ use App\Jobs\BuoyCreateJob;
 use App\Qumatik;
 use App\QumatikData;
 use FarhanWazir\GoogleMaps\GMaps;
+use Illuminate\Support\Facades\Request;
 use Spatie\Dropbox\Client;
 
 class QumatikDataController extends Controller{
@@ -33,63 +34,66 @@ class QumatikDataController extends Controller{
 
 
 
-    public function location(QumatikData $id){
-        dd($id);
-        $qumatikDatas = json_decode($id->datas);
+    public function location(Request $request){
+        $filepath = Request::get('filepath');
+
 
         // Connecting to dropbox
         $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
-        $download = $client->contentEndpointRequest('files/download', ['path' => $sdata->filepath]);
+        $download = $client->contentEndpointRequest('files/download', ['path' => $filepath]);
 
         // fetch the content
         $content = $download->getBody()->getContents();
-
-        // start_time, end_time, average ice thickness
         $content = explode("\r\n", $content);
         array_pop($content);
 
 
-        // Fetch latitude and longitude from the file.
-        $datas = $this->gettingData($settings, $content);
-
-        // Decode the Data json
-        $data = json_decode($datas);
-
+        // unsetting/deleting 0 - 2 rows
+        unset($content[0], $content[1], $content[2]);
+        $content = (array) array_values($content);
+        $datas = $this->gettingLocationData($content);
 
 
 
-        $coordinates = array();
-        foreach($qumatikDatas as $index => $data) {
-            array_push($coordinates,$data->latitude . ',' .$data->longitude  );
-        }
 
 
-        $config['center'] = $coordinates[0];
-        $config['zoom'] = 'auto';
-        $config['map_height'] = '1000px';
-        $config['scrollwheel'] = false;
-
-        $gmap = new GMaps();
-        $gmap->initialize($config);
-
-        $marker['position'] = $coordinates[0];
-        $marker['infowindow_content'] = 'Starting Point';
-        $marker['icon'] = 'http://maps.google.com/mapfiles/kml/paddle/red-circle.png';
-        $gmap->add_marker($marker);
-
-        $marker['position'] =  $coordinates[1];
-        $marker['infowindow_content'] = 'Ending Point';
-        $marker['icon']='http://maps.google.com/mapfiles/kml/paddle/grn-circle.png';
-        $gmap->add_marker($marker);
+        return response()->json($datas);
 
 
-        $polyline = array();
-        $polyline['points'] = $coordinates;
-        $gmap->add_polyline($polyline);
-
-        $map = $gmap->create_map();
-
-        return view('layouts.qumatiks.map', compact('map'));
+//
+//
+//        $coordinates = array();
+//        foreach($qumatikDatas as $index => $data) {
+//            array_push($coordinates,$data->latitude . ',' .$data->longitude  );
+//        }
+//
+//
+//        $config['center'] = $coordinates[0];
+//        $config['zoom'] = 'auto';
+//        $config['map_height'] = '1000px';
+//        $config['scrollwheel'] = false;
+//
+//        $gmap = new GMaps();
+//        $gmap->initialize($config);
+//
+//        $marker['position'] = $coordinates[0];
+//        $marker['infowindow_content'] = 'Starting Point';
+//        $marker['icon'] = 'http://maps.google.com/mapfiles/kml/paddle/red-circle.png';
+//        $gmap->add_marker($marker);
+//
+//        $marker['position'] =  $coordinates[1];
+//        $marker['infowindow_content'] = 'Ending Point';
+//        $marker['icon']='http://maps.google.com/mapfiles/kml/paddle/grn-circle.png';
+//        $gmap->add_marker($marker);
+//
+//
+//        $polyline = array();
+//        $polyline['points'] = $coordinates;
+//        $gmap->add_polyline($polyline);
+//
+//        $map = $gmap->create_map();
+//
+//        return view('layouts.qumatiks.map', compact('map'));
     }
 
 
@@ -219,7 +223,17 @@ class QumatikDataController extends Controller{
     }
 
 
+    private function gettingLocationData(array $datas){
+        foreach ($datas as $index => $data){
+            $data = explode(";", $data);
 
+            $settings['coordinates'][] = array(
+                'latitude'              =>  isset($data[5]) ? $data[5] : '',
+                'longitude'             =>  isset($data[6]) ? $data[6] : '',
+            );
+        }
+        return json_encode($settings);
+    }
 
     /**
      * @param array $settings
