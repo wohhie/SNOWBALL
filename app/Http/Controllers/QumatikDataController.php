@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\BuoyCreateJob;
+use App\Qumatik;
 use App\QumatikData;
 use FarhanWazir\GoogleMaps\GMaps;
 use Spatie\Dropbox\Client;
@@ -16,6 +17,7 @@ class QumatikDataController extends Controller{
     public function index($imei){
         // AUTHENTICATE WITH DROPBOX
          $this->dispatch(new BuoyCreateJob($imei));
+
         return "Completed";
     }
 
@@ -32,7 +34,29 @@ class QumatikDataController extends Controller{
 
 
     public function location(QumatikData $id){
+        dd($id);
         $qumatikDatas = json_decode($id->datas);
+
+        // Connecting to dropbox
+        $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
+        $download = $client->contentEndpointRequest('files/download', ['path' => $sdata->filepath]);
+
+        // fetch the content
+        $content = $download->getBody()->getContents();
+
+        // start_time, end_time, average ice thickness
+        $content = explode("\r\n", $content);
+        array_pop($content);
+
+
+        // Fetch latitude and longitude from the file.
+        $datas = $this->gettingData($settings, $content);
+
+        // Decode the Data json
+        $data = json_decode($datas);
+
+
+
 
         $coordinates = array();
         foreach($qumatikDatas as $index => $data) {
@@ -125,6 +149,75 @@ class QumatikDataController extends Controller{
     }
 
 
+    public function downloadBackground(){
+        $sdatas = QumatikData::select('filename', 'filepath', 'rho0', 'rho1', 'rho2', 'em31Height', 'qumatik_id')->get();
+        $counter = 1;
+        foreach ($sdatas as $sdata){
+            if (empty($sdata->rho0) &&
+                empty($sdata->rho1) &&
+                empty($sdata->rho2) &&
+                empty($sdata->em31Height)){
+
+                $counter++;
+                $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
+                $download = $client->contentEndpointRequest('files/download', ['path' => $sdata->filepath]);
+
+                // fetch the content
+                $content = $download->getBody()->getContents();
+
+                // start_time, end_time, average ice thickness
+                $content = explode("\r\n", $content);
+                array_pop($content);
+
+                /*
+                Fetching the settings data from contents
+                ===========================================================
+                Params: contents first line. (string)
+                */
+                $settings = $this->getingRH0data(
+                    $sdata->filename,
+                    $sdata->filepath,
+                    $content[1]);
+
+                // unsetting/deleting 0 - 2 rows
+                unset($content[0], $content[1], $content[2]);
+                $content = (array) array_values($content);
+                $datas = $this->gettingData($settings, $content);
+
+                // Decode the Data json
+                $data = json_decode($datas);
+                // INSETING INTO THE DATABASE
+
+                QumatikData::where('filename', $sdata->filename)
+                    ->where('filepath', $sdata->filepath)
+                    ->update([
+                        "filename"              =>  $data->filename,
+                        "filepath"              =>  $data->filepath,
+                        "rho0"                  =>  $data->rho0,
+                        "rho1"                  =>  $data->rho1,
+                        "rho2"                  =>  $data->rho2,
+                        "em31Height"            =>  $data->em31Height,
+                        "avg_ice_thickness"     =>  $data->avg_ice_thickness,
+                        "min_ice_thickness"     =>  $data->min_ice_thickness,
+                        "max_ice_thickness"     =>  $data->max_ice_thickness,
+                        "datas"                 =>  json_encode($data->datas),
+                        "start_time"            =>  $data->start_time,
+                        "end_time"              =>  $data->end_time,
+                        "filesize"              =>  $sdata->filesize,
+                        "qumatik_id"            =>  $sdata->qumatik_id,
+                        "updated_at"            =>  now()->toDateTimeString(),
+                    ]);
+
+                dd("Inserted successfully" . $sdata->filename);
+
+            }
+
+        }
+
+
+        dd("complete");
+    }
+
 
 
 
@@ -132,34 +225,41 @@ class QumatikDataController extends Controller{
      * @param array $settings
      * @param array $datas
      */
-    private function gettingData(array $settings, array $datas) {
-
+    private function gettingData(array $settings = null, array $datas) {
         $ice_thickness = 0;
         $count = 0;
         foreach ($datas as $index => $data){
             $data = explode(";", $data);
-
             $ice_thickness += isset($data[4]) ? (float) $data[4] : 0;
             $count++;
-
 
             $settings['datas'][] = array(
                 'timestamps'            =>  isset($data[0]) ? $data[0] : '',
                 'raw_conductivity'      =>  isset($data[1]) ? $data[1] : '',
-                'raw_in_phase'          =>  isset($data[2]) ? $data[2] : '',
-                'em31_byte'             =>  isset($data[3]) ? $data[3] : '',
+//                'raw_in_phase'          =>  isset($data[2]) ? $data[2] : '',
+//                'em31_byte'             =>  isset($data[3]) ? $data[3] : '',
                 'ice_thickness'         =>  isset($data[4]) ? $data[4] : 0,
                 'latitude'              =>  isset($data[5]) ? $data[5] : '',
                 'longitude'             =>  isset($data[6]) ? $data[6] : '',
-                'fix_quality'           =>  isset($data[7]) ? $data[7] : '',
+//                'fix_quality'           =>  isset($data[7]) ? $data[7] : '',
                 'number_of_satellites'  =>  isset($data[8]) ? $data[8] : '',
-                'msl_height'            =>  isset($data[9]) ? $data[9] : '',
-                'geoidal_separation'    =>  isset($data[10]) ? $data[10] : '',
-                'age_of_differential'   =>  isset($data[11]) ? $data[11] : '',
-                'reference_station_id'  =>  isset($data[12]) ? $data[12] : ''
+//                'msl_height'            =>  isset($data[9]) ? $data[9] : '',
+//                'geoidal_separation'    =>  isset($data[10]) ? $data[10] : '',
+//                'age_of_differential'   =>  isset($data[11]) ? $data[11] : '',
+//                'reference_station_id'  =>  isset($data[12]) ? $data[12] : ''
             );
 
+            $settings['coordinates'][] = array(
+                'timestamps'            =>  isset($data[0]) ? $data[0] : '',
+                'raw_conductivity'      =>  isset($data[1]) ? $data[1] : '',
+                'ice_thickness'         =>  isset($data[4]) ? $data[4] : 0,
+                'latitude'              =>  isset($data[5]) ? $data[5] : '',
+                'longitude'             =>  isset($data[6]) ? $data[6] : '',
+                'number_of_satellites'  =>  isset($data[8]) ? $data[8] : '',
+            );
         }
+
+
 
         $settings['avg_ice_thickness'] = $ice_thickness / $count;
         $settings['start_time'] = min(array_column($settings['datas'], 'timestamps'));
@@ -167,6 +267,7 @@ class QumatikDataController extends Controller{
         $settings['min_ice_thickness'] = (float) min(array_column($settings['datas'], 'ice_thickness'));
         $settings['max_ice_thickness'] = (float) max(array_column($settings['datas'], 'ice_thickness'));
 
+        dd($settings);
         return json_encode($settings);
     }
 
