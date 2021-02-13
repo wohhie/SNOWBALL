@@ -4,14 +4,24 @@
 @section('headIncludes')
     <!-- Custom Style -->
     <link rel="stylesheet" href="{{ asset('css/custom-style.css') }}">
-
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style type="text/css">
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        .map {
+            height: 600px;
+            width: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+    </style>
 @endsection
 
 @section('bodyClass')class="hold-transition skin-blue sidebar-mini"@endsection
 @section('contentHeader')
 <!-- Content Header (Page header) -->
 <section class = "content-header">
-<h1> Arctic Bay <small>all SmartQUMATIK</small>   </h1>
+<h1> Arctic Bay <small>all SmartQUMATIK</small></h1>
 
 <ol class="breadcrumb">
     <li><a href="/admin"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -69,6 +79,8 @@
                                        data-filepath="{{ $data->filepath }}"
                                        data-id="{{ $data->id }}"
                                        data-toggle="modal"
+                                       data-keyboard="true"
+                                       data-backdrop="true"
                                        data-target="#location_modal_{{ $data->id }}">
                                         <i class="fa fa-location-arrow"></i>
                                     </a>
@@ -87,8 +99,7 @@
                                                         </div>
                                                     </div>
 
-                                                    @csrf
-                                                    @method('DELETE')
+                                                    <div class="map" id="map_{{ $data->id }}"></div>
 
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-danger">Delete Now</button>
@@ -129,7 +140,13 @@
  <script src="{{ asset('themes/admin/dist/js/demo.js') }}"></script>
 
 
+
+
 <script type="text/javascript">
+    // This example creates a 2-pixel-wide red polyline showing the path of
+    // the first trans-Pacific flight between Oakland, CA, and Brisbane,
+    // Australia which was made by Charles Kingsford Smith.
+
     $(function () {
         $('#example1').DataTable({
             'paging'      : true,
@@ -141,8 +158,7 @@
             'pageLength'  : 25,
         })
 
-
-        $(document).on("click", ".location__modal", function () {
+        $(document).on("click", ".location__modal", function (e) {
             let filepath = $(this).data('filepath')
             let id = $(this).data('id')
             // Add remove loading class on body element based on Ajax request status
@@ -161,18 +177,36 @@
                 type: "get",
                 data: { filepath },
                 success:function(response){
-                    // TODO: generate the google map with the value
-                    console.log(response);
+                    const coordinates = JSON.parse(response)
+
+
+                    const map = new google.maps.Map(document.getElementById("map_" + id), {
+                        zoom: 8,
+                        center: coordinates[0],
+                        mapTypeId: "terrain",
+                    });
+
+
+                    const flightPath = new google.maps.Polyline({
+                        path: coordinates,
+                        geodesic: true,
+                        strokeColor: "#ff0000",
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2,
+                    });
+
+                    flightPath.setMap(map);
+
                 },
             })
-
-
-
         })
 
     })
-
-
-
 </script>
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvAoYI_rnWiNJUpta8_heKO-CHSp18HLQ&libraries=&v=weekly"
+    async
+></script>
+
 @endsection

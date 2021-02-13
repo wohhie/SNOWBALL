@@ -52,20 +52,16 @@ class QumatikDataController extends Controller{
         unset($content[0], $content[1], $content[2]);
         $content = (array) array_values($content);
         $datas = $this->gettingLocationData($content);
-
-
-
-
-
         return response()->json($datas);
 
 
-//
-//
+
 //        $coordinates = array();
-//        foreach($qumatikDatas as $index => $data) {
+//        foreach($datas as $index => $data) {
 //            array_push($coordinates,$data->latitude . ',' .$data->longitude  );
 //        }
+//
+//        return $coordinates;
 //
 //
 //        $config['center'] = $coordinates[0];
@@ -93,7 +89,7 @@ class QumatikDataController extends Controller{
 //
 //        $map = $gmap->create_map();
 //
-//        return view('layouts.qumatiks.map', compact('map'));
+//        return $map;
     }
 
 
@@ -227,9 +223,9 @@ class QumatikDataController extends Controller{
         foreach ($datas as $index => $data){
             $data = explode(";", $data);
 
-            $settings['coordinates'][] = array(
-                'latitude'              =>  isset($data[5]) ? $data[5] : '',
-                'longitude'             =>  isset($data[6]) ? $data[6] : '',
+            $settings[] = array(
+                'lat'             =>  isset($data[5]) ? (double) $data[5] : 0,
+                'lng'             =>  isset($data[6]) ? (double) $data[6] : 0,
             );
         }
         return json_encode($settings);

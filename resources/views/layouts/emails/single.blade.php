@@ -681,9 +681,7 @@
                                     </div>
                                 </form>
 
-
                                 <div class="margin-bottom"></div>
-
 
                                 <div class="progress-group">
                                     <span class="progress-text">Depth of Snow(cm)</span>
