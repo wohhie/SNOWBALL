@@ -12,5 +12,4 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /public/adminlte/pages
-/public/themes
 .idea
