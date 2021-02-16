@@ -177,11 +177,15 @@
                 type: "get",
                 data: { filepath },
                 success:function(response){
+                    // check the camera zoom
+
                     const coordinates = JSON.parse(response)
+                    let count = coordinates.length
+
 
 
                     const map = new google.maps.Map(document.getElementById("map_" + id), {
-                        zoom: 8,
+                        zoom: count > 100000 ? 7 : 18,
                         center: coordinates[0],
                         mapTypeId: "terrain",
                     });
