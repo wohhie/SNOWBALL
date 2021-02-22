@@ -191,6 +191,7 @@
                     });
 
 
+
                     const flightPath = new google.maps.Polyline({
                         path: coordinates,
                         geodesic: true,
