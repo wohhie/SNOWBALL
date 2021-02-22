@@ -100,6 +100,8 @@
                                                     </div>
 
                                                     <div class="map" id="map_{{ $data->id }}"></div>
+                                                    <H3 id = "distance_{{ $data->id }}"></H3>
+                                                    <H3 id ="msg_{{$data->id}}"></H3>
 
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-danger">Delete Now</button>
@@ -142,6 +144,7 @@
 
 
 
+
 <script type="text/javascript">
     // This example creates a 2-pixel-wide red polyline showing the path of
     // the first trans-Pacific flight between Oakland, CA, and Brisbane,
@@ -157,6 +160,7 @@
             'autoWidth'   : true,
             'pageLength'  : 25,
         })
+        let temp = [];
 
         $(document).on("click", ".location__modal", function (e) {
             let filepath = $(this).data('filepath')
@@ -181,8 +185,30 @@
 
                     const coordinates = JSON.parse(response)
                     let count = coordinates.length
+                    var distance = 0 ;
+                    for (i = 0; i < coordinates.length -1; i++) {
 
+                    var latLong1 = Object.values(coordinates[i])+'';
+                    var latLong2 = Object.values(coordinates[i+1])+ '';
+                    var mk1 = latLong1.split(",");
+                    var mk2 = latLong2.split(",");
 
+                    distance  += calculateDistance(mk1,mk2);
+                    }
+                    document.getElementById("distance_"+ id).innerHTML = "The total distance is:&nbsp" + distance.toFixed(2) +"&nbsp miles.";
+
+                    function calculateDistance(mk1, mk2) {
+
+                        var R = 3958.8; // Radius of the Earth in miles
+                        var rlat1 = parseFloat(mk1[0])* (Math.PI/180); // Convert degrees to radians
+                        var rlat2 = parseFloat(mk2[0])* (Math.PI/180); // Convert degrees to radians
+                        const difflat = Math.abs(rlat2 - rlat1); // Radian difference (latitudes)
+                        var difflon = (parseFloat(mk2[1])- parseFloat(mk1[1])) * (Math.PI/180); // Radian difference (longitudes)
+                        var d = 2 * R * Math.asin(Math.sqrt(Math.sin(difflat/2)*Math.sin(difflat/2)+Math.cos(rlat1)*Math.cos(rlat2)*Math.sin(difflon/2)*Math.sin(difflon/2)));
+                       // console.log(d);
+                        return d;
+
+                    }
 
                     const map = new google.maps.Map(document.getElementById("map_" + id), {
                         zoom: count > 100000 ? 7 : 18,
@@ -190,6 +216,19 @@
                         mapTypeId: "terrain",
                     });
 
+                    new google.maps.Marker({
+                        position : coordinates[0],
+                        map,
+                        title:'Start Point',
+                        icon:'http://maps.google.com/mapfiles/kml/paddle/grn-circle.png'
+                    });
+
+                    new google.maps.Marker({
+                        position : coordinates[coordinates.length -1 ],
+                        map,
+                        title:'End Point',
+                        icon:'http://maps.google.com/mapfiles/kml/paddle/red-circle.png'
+                    });
 
 
                     const flightPath = new google.maps.Polyline({
@@ -202,8 +241,39 @@
 
                     flightPath.setMap(map);
 
+
+                    let directionsService = new google.maps.DirectionsService();
+                    let directionsRenderer = new google.maps.DirectionsRenderer();
+                    directionsRenderer.setMap(map); // Existing map object displays directions
+                    // Create route from existing points used for markers
+                    const route = {
+                        origin: coordinates[0],
+                        destination: coordinates[coordinates.length-1],
+                        travelMode: 'DRIVING'
+                    }
+
+                    directionsService.route(route,
+                        function(response, status) { // anonymous function to capture directions
+                            if (status !== 'OK') {
+                                window.alert('Directions request failed due to ' + status);
+                                return;
+                            } else {
+                                directionsRenderer.setDirections(response); // Add route to the map
+                                var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+                                if (!directionsData) {
+                                    window.alert('Directions request failed');
+                                    return;
+                                }
+                                else {
+                                    document.getElementById('msg_'+id).innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
+                                }
+                            }
+                        });
+
                 },
             })
+
+
         })
 
     })
