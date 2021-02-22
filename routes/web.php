@@ -107,6 +107,7 @@ Route::get('qumatiksdata/location', [Controllers\QumatikDataController::class, '
 Route::get('qumatiksdata/download/{id}', [Controllers\QumatikDataController::class, 'download'])->name('qumatiksdata.download');
 Route::get('qumatiksdata/downloadBackground', [Controllers\QumatikDataController::class, 'downloadBackground']);
 
+//All Report information will display here.
 
-
+Route::resource('/report',ReportController::class);
 
