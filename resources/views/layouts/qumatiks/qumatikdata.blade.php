@@ -5,6 +5,7 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="{{ asset('css/custom-style.css') }}">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
     <style type="text/css">
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
@@ -71,6 +72,7 @@
                                 <td>{{ $data->start_time }}</td>
                                 <td>{{ $data->end_time }}</td>
                                 <td><span class="badge badge-primary">{{ ceil($data->filesize / 1048576) }} MB</span></td>
+
                                 <td>
                                     <a href="#location_modal"
                                        id="location_modal"
@@ -78,6 +80,10 @@
                                        data-filename="{{ $data->filename }}"
                                        data-filepath="{{ $data->filepath }}"
                                        data-id="{{ $data->id }}"
+                                       data-minimumicethickness="{{$data->min_ice_thickness}}"
+                                       data-maxicethickness = "{{$data->max_ice_thickness}}"
+                                       data-starttime="{{date('Y/m/d h:i:s', strtotime($data->start_time))}}"
+                                       data-endtime="{{date('Y/m/d h:i:s', strtotime($data->end_time))}}"
                                        data-toggle="modal"
                                        data-keyboard="true"
                                        data-backdrop="true"
@@ -99,9 +105,64 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="row">
+
+                                                        <div class="col-md-4">
+                                                            <div class="box box-success box-solid">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title">Total Distance</h3>
+
+                                                                    <div class="box-tools pull-right">
+
+                                                                    </div>
+                                                                    <!-- /.box-tools -->
+                                                                </div>
+                                                                <!-- /.box-header -->
+                                                                <div class="box-body" id = "distance_{{ $data->id }}">
+                                                                </div>
+                                                                <!-- /.box-body -->
+                                                            </div>
+                                                            <!-- /.box -->
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="box box-warning box-solid">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title">Ice Thickness</h3>
+
+                                                                    <div class="box-tools pull-right">
+
+                                                                    </div>
+                                                                    <!-- /.box-tools -->
+                                                                </div>
+                                                                <!-- /.box-header -->
+                                                                <div class="box-body" id ="mini_ice_{{$data->id}}">
+                                                                </div>
+                                                                <!-- /.box-body -->
+                                                            </div>
+                                                            <!-- /.box -->
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="box box-danger box-solid">
+                                                                <div class="box-header with-border">
+                                                                    <h3 class="box-title">Total Time</h3>
+
+                                                                    <div class="box-tools pull-right">
+
+                                                                    </div>
+                                                                    <!-- /.box-tools -->
+                                                                </div>
+                                                                <!-- /.box-header -->
+                                                                <div class="box-body" id ="time_{{$data->id}}">
+                                                                </div>
+                                                                <!-- /.box-body -->
+                                                            </div>
+                                                            <!-- /.box -->
+                                                        </div>
+
+                                                    </div>
+
                                                     <div class="map" id="map_{{ $data->id }}"></div>
-                                                    <H3 id = "distance_{{ $data->id }}"></H3>
-                                                    <H3 id ="msg_{{$data->id}}"></H3>
+
 
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-danger">Delete Now</button>
@@ -163,8 +224,40 @@
         let temp = [];
 
         $(document).on("click", ".location__modal", function (e) {
-            let filepath = $(this).data('filepath')
+            let filepath = $(this).data('filepath');
             let id = $(this).data('id')
+            let min_ice_thickness = $(this).data('minimumicethickness');
+            let max_ice_thickness = $(this).data('maxicethickness');
+            let start_time = $(this).data("starttime");
+            let end_time = $(this).data("endtime");
+
+
+            // let diffInMilliSeconds = Math.abs(new Date(end_time) - new Date(start_time)) / 1000;
+            //
+            // // calculate days
+            // const days = Math.floor(diffInMilliSeconds / 86400);
+            // diffInMilliSeconds -= days * 86400;
+            // console.log('calculated days', days);
+            //
+            // // calculate hours
+            // const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
+            // diffInMilliSeconds -= hours * 3600;
+            // console.log('calculated hours', hours);
+            //
+            // // calculate minutes
+            // const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
+            // diffInMilliSeconds -= minutes * 60;
+            // console.log('minutes', minutes);
+
+
+            var startTime = new Date(start_time);
+            var endTime = new Date(end_time);
+            var difference = endTime.getTime() - startTime.getTime(); // This will give difference in milliseconds
+            var Minutes = (difference / 60000).toFixed(2);
+            var Hours = (difference/3600000).toFixed(2);
+
+
+
             // Add remove loading class on body element based on Ajax request status
             $(document).on({
                 ajaxStart: function(){
@@ -181,11 +274,27 @@
                 type: "get",
                 data: { filepath },
                 success:function(response){
+
+                    var max = "Maximum:&nbsp".bold();
+                    var min = "Minimum:&nbsp".bold();
+                    var start = "Start:&nbsp".bold();
+                    var end = "End:&nbsp".bold()
+                    var miles = "Miles:&nbsp".bold();
+                    var kilometer = "Kilometers:&nbsp".bold();
+                    var hour = "Hours:&nbsp".bold();
+                    var minute = "Minutes:&nbsp".bold();
+
+                    document.getElementById("time_"+ id).innerHTML = start+start_time+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+end+end_time+"\n" +hour+Hours+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+minute +Minutes;
+
+                    document.getElementById("mini_ice_"+ id).innerHTML = min+min_ice_thickness + "&nbsp &nbsp&nbsp&nbsp"+max+max_ice_thickness;
                     // check the camera zoom
 
                     const coordinates = JSON.parse(response)
                     let count = coordinates.length
                     var distance = 0 ;
+
+
+
                     for (i = 0; i < coordinates.length -1; i++) {
 
                     var latLong1 = Object.values(coordinates[i])+'';
@@ -195,7 +304,7 @@
 
                     distance  += calculateDistance(mk1,mk2);
                     }
-                    document.getElementById("distance_"+ id).innerHTML = "The total distance is:&nbsp" + distance.toFixed(2) +"&nbsp miles.";
+                    document.getElementById("distance_"+ id).innerHTML = miles + distance.toFixed(2) + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+kilometer + (distance.toFixed(2) * 1.6).toFixed(2);
 
                     function calculateDistance(mk1, mk2) {
 
@@ -241,33 +350,34 @@
                     flightPath.setMap(map);
 
 
-                    let directionsService = new google.maps.DirectionsService();
-                    let directionsRenderer = new google.maps.DirectionsRenderer();
-                    directionsRenderer.setMap(map); // Existing map object displays directions
+                    // let directionsService = new google.maps.DirectionsService();
+                    // let directionsRenderer = new google.maps.DirectionsRenderer();
+                    // directionsRenderer.setMap(map); // Existing map object displays directions
                     // Create route from existing points used for markers
-                    const route = {
-                        origin: coordinates[0],
-                        destination: coordinates[coordinates.length-1],
-                        travelMode: 'DRIVING'
-                    }
+                    // const route = {
+                    //     origin: coordinates[0],
+                    //     destination: coordinates[coordinates.length-1],
+                    //     travelMode: 'DRIVING'
+                    // }
 
-                    directionsService.route(route,
-                        function(response, status) { // anonymous function to capture directions
-                            if (status !== 'OK') {
-                                window.alert('Directions request failed due to ' + status);
-                                return;
-                            } else {
-                                directionsRenderer.setDirections(response); // Add route to the map
-                                var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
-                                if (!directionsData) {
-                                    window.alert('Directions request failed');
-                                    return;
-                                }
-                                else {
-                                    document.getElementById('msg_'+id).innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
-                                }
-                            }
-                        });
+                    // directionsService.route(route,
+                    //     function(response, status) { // anonymous function to capture directions
+                    //         if (status !== 'OK') {
+                    //             window.alert('Directions request failed due to ' + status);
+                    //             return;
+                    //         } else {
+                    //             directionsRenderer.setDirections(response); // Add route to the map
+                    //             var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+                    //             if (!directionsData) {
+                    //                 window.alert('Directions request failed');
+                    //                 return;
+                    //             }
+                    //             else {
+                    //                 document.getElementById('msg_'+id).innerHTML = "";
+                    //                 document.getElementById('msg_'+id).innerHTML += " Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").";
+                    //             }
+                    //         }
+                    //     });
 
                 },
             })
