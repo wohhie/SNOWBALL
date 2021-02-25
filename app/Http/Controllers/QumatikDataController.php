@@ -223,9 +223,12 @@ class QumatikDataController extends Controller{
         foreach ($datas as $index => $data){
             $data = explode(";", $data);
 
+
             $settings[] = array(
                 'lat'             =>  isset($data[5]) ? (double) $data[5] : 0,
                 'lng'             =>  isset($data[6]) ? (double) $data[6] : 0,
+
+
             );
         }
         return json_encode($settings);
@@ -266,6 +269,8 @@ class QumatikDataController extends Controller{
                 'latitude'              =>  isset($data[5]) ? $data[5] : '',
                 'longitude'             =>  isset($data[6]) ? $data[6] : '',
                 'number_of_satellites'  =>  isset($data[8]) ? $data[8] : '',
+
+
             );
         }
 
