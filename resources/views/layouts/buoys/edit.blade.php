@@ -39,7 +39,7 @@
                             </ul>
                         </div><br />
                     @endif
-                    <form role="form" method="post" action="{{ route('buoys.update', ['id'=>$buoy->id]) }}">
+                    <form role="form" method="post" action="{{ route('buoys.update', $buoy->id) }}">
                         @csrf
                         @method('PUT')
 

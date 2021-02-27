@@ -59,7 +59,7 @@
 
                                     <form action="{{ route('qumatiks.destroy',$qumatik->id) }}" method="POST">
                                         <a class="btn btn-success" href="{{ URL('/email/'.$qumatik->imei )}}"><i class="fa fa-eye"></i></a>
-                                        <a class="btn btn-primary" href="{{ route('qumatiks.edit', ['id'=>$qumatik->id]) }}"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-primary" href="{{ route('qumatiks.edit', $qumatik->id) }}"><i class="fa fa-edit"></i></a>
                                         <a class="btn btn-danger" href="#" data-toggle="modal" data-target=".delete-{{$qumatik->imei}}"><i class="fa fa-trash"></i></a>
 
                                         <div class="modal fade delete-{{$qumatik->imei}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">

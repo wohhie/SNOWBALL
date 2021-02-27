@@ -607,7 +607,7 @@
 
 
 
-                            <form role="form" method="post" action="{{ route('summery.update', ['id'=>$dataInfos[0]->uniqueID]) }}">
+                            <form role="form" method="post" action="{{ route('summery.update', $dataInfos[0]->uniqueID) }}">
                                 @csrf
                                 @method('PUT')
 

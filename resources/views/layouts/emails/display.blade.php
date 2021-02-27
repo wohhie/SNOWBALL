@@ -12,7 +12,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <h1>Buoys Information <small>all Buoys</small></h1>
-  
+
   <ol class="breadcrumb">
     <li><a href="/admin"><i class="fa fa-dashboard"></i> Dashboard</a></li>
     <li class="active">Buoys Information</li>
@@ -61,7 +61,7 @@
                                 <td>
                                     <form action="{{ route('buoys.destroy',$buoy->id) }}" method="POST">
 
-                                        <a class="btn btn-primary" href="{{ route('buoys.edit', ['id'=>$buoy->id]) }}"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-primary" href="{{ route('buoys.edit', $buoy->id) }}"><i class="fa fa-edit"></i></a>
                                         {{-- <a class="btn btn-primary" href="{{ route('students.edit',$student->id) }}">Edit</a>--}}
 
                                         @csrf

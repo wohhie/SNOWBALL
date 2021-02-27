@@ -36,7 +36,7 @@
                 </ul>
             </div><br />
         @endif
-        <form role="form" method="post" action="{{ route('qumatiks.update', ['id'=>$qumatik->id]) }}">
+        <form role="form" method="post" action="{{ route('qumatiks.update', $qumatik->id) }}">
             @csrf
             @method('PUT')
 

@@ -51,7 +51,7 @@
                                 <td>
                                     <form action="{{ route('communities.destroy',$community->id) }}" method="POST">
                                         <a class="btn btn-success" href="{{ URL('/email/'.$community->id )}}"><i class="fa fa-eye"></i></a>
-                                        <a class="btn btn-primary" href="{{ route('communities.edit', ['id'=>$community->id]) }}"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-primary" href="{{ route('communities.edit', $community->id) }}"><i class="fa fa-edit"></i></a>
                                         <a class="btn btn-danger" href="#" data-toggle="modal" data-target=".delete-{{$community->id}}"><i class="fa fa-trash"></i></a>
 
                                         <div class="modal fade delete-{{$community->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">

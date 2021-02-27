@@ -36,7 +36,7 @@
                 </ul>
             </div><br />
         @endif
-        <form role="form" method="post" action="{{ route('communities.update', ['id'=>$community->id]) }}">
+        <form role="form" method="post" action="{{ route('communities.update', $community->id ) }}">
             @csrf
             @method('PUT')
 

@@ -60,7 +60,7 @@
 
                                     <form action="{{ route('buoys.destroy',$buoy->id) }}" method="POST">
                                         <a class="btn btn-success" href="{{ URL('/email/'.$buoy->imei )}}"><i class="fa fa-eye"></i></a>
-                                        <a class="btn btn-primary" href="{{ route('buoys.edit', ['id'=>$buoy->id]) }}"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-primary" href="{{ route('buoys.edit', $buoy->id) }}"><i class="fa fa-edit"></i></a>
                                         <a class="btn btn-danger" href="#" data-toggle="modal" data-target=".delete-{{$buoy->imei}}"><i class="fa fa-trash"></i></a>
 
                                         <div class="modal fade delete-{{$buoy->imei}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
