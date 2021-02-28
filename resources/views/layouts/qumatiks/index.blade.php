@@ -46,7 +46,9 @@
                         @forelse($qumatiks as $index=>$qumatik)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td><b><a href="{{ route('qumatiks.show', $qumatik->id) }}">{{ $qumatik->imei }}</a></b></td>
+                                <td>
+                                    <b><a href="{{ route('qumatiks.show', $qumatik->id) }}">{{ $qumatik->imei }}</a></b>
+                                </td>
 								<td>{{ $qumatik->community->name }}</td>
 
                                 <td>{{ $qumatik->latitude }}</td>

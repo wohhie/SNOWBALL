@@ -48,7 +48,7 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
-{{--                                    <b><a href="{{ URL('/email/'.$buoy['imei'] )}}">{{ $buoy['imei'] }}</a></b>--}}
+                                    <b><a href="{{ URL('/email/'.$buoy['imei'] )}}">{{ $buoy['imei'] }}</a></b>
                                 </td>
 								<td>{{ $buoy->community->name }}</td>
                                 <td>{{ $buoy->serialNo }}</td>

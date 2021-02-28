@@ -17,9 +17,10 @@ class QumatikController extends Controller{
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index(){
+        // Redis::del('qumatiks:all');
         if (!Redis::exists('qumatiks:all')){
             $qumatiks = Qumatik::with('community')->get();
-            serialize(Redis::set('qumatiks:all', $qumatiks));
+            Redis::set('qumatiks:all', serialize($qumatiks));
         }else{
             $qumatiks = unserialize(Redis::get('qumatiks:all'));
         }
