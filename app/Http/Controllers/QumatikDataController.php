@@ -18,9 +18,7 @@ class QumatikDataController extends Controller{
      */
     public function index($imei){
         // AUTHENTICATE WITH DROPBOX
-//         $this->dispatch(new BuoyCreateJob($imei));
-
-
+        // $this->dispatch(new BuoyCreateJob($imei));
         $client = new Client(["fu65xsevq0k1zkj", "h4ys4vbczp1hpjd"]);
         $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
 
@@ -31,81 +29,22 @@ class QumatikDataController extends Controller{
         // FIND THE LIST OF FOLDERS
         if (!Cursor::where('qumatik_id', $qumatik->id)->exists()){
             $folders = $client->listFolder($qumatik->dropbox_dir);
-            dd(Cursor::create([
+            Cursor::create([
                 "entries"       =>  count($folders["entries"]),
                 "cursor"        =>  $folders["cursor"],
                 "qumatik_id"    =>  $qumatik->id,
-            ]));
+            ]);
 
 
         }else{
-            $cursor = Cursor::where('qumatik_id', $qumatik->id)->firstOrFail();
+            $cursor = Cursor::findOrFail($qumatik->id);
             $folders = $client->listFolderContinue($cursor->cursor);
+
+            // Store updated cursor value
+            $cursor->entries = count($folders["entries"]);
+            $cursor->cursor = $folders["cursor"];
+            $cursor->save();
         }
-
-        if (count($folders["entries"]) > 0){
-            foreach ($folders['entries'] as $index => $folder){
-                dd($folders);
-                // fetch all the files in that folder
-                $files = $client->listFolder($folder['path_display']);
-
-                $file_index = array_column($files['entries'], 'name');
-                $index = key(preg_grep( '([Log])', array_values($file_index)));
-
-
-                $log_file_path = $files['entries'][$index]['path_display'];
-                $download = $client->contentEndpointRequest('files/download', ['path' => $log_file_path]);
-
-
-                // fetch the content
-                $content = $download->getBody()->getContents();
-
-                // start_time, end_time, average ice thickness
-                $content = explode("\r\n", $content);
-                array_pop($content);
-
-
-                /*
-                Fetching the settings data from contents
-                ===========================================================
-                Params: contents first line. (string)
-                */
-                $settings = $this->getingRH0data(
-                    $files['entries'][$index]['name'],
-                    $files['entries'][$index]['path_display'],
-                    $content[1]);
-
-                // unsetting/deleting 0 - 2 rows
-                unset($content[0], $content[1], $content[2]);
-                $content = (array) array_values($content);
-                $datas = $this->gettingData($settings, $content);
-
-                // Decode the Data json
-                $data = json_decode($datas);
-
-                QumatikData::insert([
-                    "filename"              =>  $data->filename,
-                    "filepath"              =>  $data->filepath,
-                    "rho0"                  =>  $data->rho0,
-                    "rho1"                  =>  $data->rho1,
-                    "rho2"                  =>  $data->rho2,
-                    "em31Height"            =>  $data->em31Height,
-                    "avg_ice_thickness"     =>  $data->avg_ice_thickness,
-                    "min_ice_thickness"     =>  $data->min_ice_thickness,
-                    "max_ice_thickness"     =>  $data->max_ice_thickness,
-                    "datas"                 =>  NULL,
-                    "start_time"            =>  $data->start_time,
-                    "end_time"              =>  $data->end_time,
-                    "filesize"              =>  $files["entries"][$index]["size"],
-                    'qumatik_id'            =>  (int) $qumatik->id,
-                    'created_at'            =>  now()->toDateTimeString(),
-                    'updated_at'            =>  now()->toDateTimeString(),
-                ]);
-            }
-        }
-
-
-        return "Completed";
     }
 
 

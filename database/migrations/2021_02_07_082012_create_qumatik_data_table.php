@@ -11,11 +11,11 @@ class CreateQumatikDataTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+    public function up(){
         Schema::create('qumatik_data', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('filename', 255)->nullable()->unique();
+            $table->dateTime('created')->nullable();
+            $table->string('filename', 255)->nullable();
             $table->longText('filepath')->nullable()->unique();
             $table->decimal('rho0', 8, 4)->nullable()->default('0.0');
             $table->decimal('rho1', 8, 4)->nullable()->default('0.0');
@@ -32,6 +32,8 @@ class CreateQumatikDataTable extends Migration
             $table->foreign('qumatik_id')->references('id')->on('qumatiks');
             $table->timestamps();
         });
+
+
     }
 
     /**
@@ -39,8 +41,7 @@ class CreateQumatikDataTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('qumatik_data');
     }
 }
