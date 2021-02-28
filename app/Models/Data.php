@@ -1,10 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cursor extends Model
-{
+class Data extends Model{
     //
 }

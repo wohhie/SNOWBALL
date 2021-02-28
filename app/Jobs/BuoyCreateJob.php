@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Qumatik;
-use App\QumatikData;
+use App\Models\Qumatik;
+use App\Models\QumatikData;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

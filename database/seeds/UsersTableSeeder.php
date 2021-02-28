@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
         $role_manager  = \App\Role::where('name', 'manager')->first();
 
         // operator information updated
-        $operator = new \App\User();
+        $operator = new \App\Models\User();
         $operator->firstname = "Neo";
         $operator->lastname = "Anderson";
         $operator->email = "operator@smartice.org";
@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
 
 
         // Manager information updated
-        $manager = new \App\User();
+        $manager = new \App\Models\User();
         $manager->firstname = "Tyler";
         $manager->lastname = "Spurrell";
         $manager->email = "manager@smartice.org";

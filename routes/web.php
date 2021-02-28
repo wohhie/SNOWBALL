@@ -57,6 +57,7 @@ Route::get('/buoy/summary/{imei}/{month}/{year}', 'BuoyController@updateSummary'
 Route::resource('datas', 'DataController');
 
 
+
 Route::get('email/{imei}', 'DataController@show');
 Route::get('data/show/{operationID}', 'DataController@singleData');
 Route::get('data/edit/{operationID}', 'DataController@editData');

@@ -15,9 +15,9 @@ class CreateCursorsTable extends Migration
     {
         Schema::create('cursors', function (Blueprint $table) {
             $table->id();
-            $table->longText('cursor')->unique();
             $table->integer('entries')->nullable();
-            $table->foreignId('qumatik_id')->constrained()->onDelete('cascade');
+            $table->longText('cursor')->unique();
+            $table->foreignId('qumatik_id')->constrained('qumatiks')->onDelete('cascade');
             $table->timestamps();
         });
     }

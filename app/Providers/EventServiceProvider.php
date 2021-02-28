@@ -7,7 +7,7 @@ use App\Events\BuoyDeleted;
 use App\Events\BuoyUpdated;
 use App\Listeners\BuoyCacheListener;
 use App\Observers\QumatikObserver;
-use App\Qumatik;
+use App\Models\Qumatik;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;

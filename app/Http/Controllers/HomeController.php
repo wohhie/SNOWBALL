@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Buoy;
-use App\Qumatik;
-use App\Role;
-use App\Summery;
-use App\User;
-use DemeterChain\B;
+use App\Models\Buoy;
+use App\Models\Qumatik;
+use App\Models\Role;
+use App\Models\Summery;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;

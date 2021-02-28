@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Buoy;
-use App\Community;
-use App\Summery;
-use Illuminate\Support\Collection;
+use App\Models\Buoy;
+use App\Models\Community;
+use App\Models\Summery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
@@ -20,10 +19,11 @@ class BuoyController extends Controller {
     public function index(){
         if (!Redis::exists('buoys:all')){
             $buoys = Buoy::with('community')->get();
-            serialize(Redis::set('buoys:all', $buoys));
+            Redis::set('buoys:all', serialize($buoys));
         }else{
             $buoys = unserialize(Redis::get('buoys:all'));
         }
+
 
         return view('layouts.buoys.index', compact('buoys'));
     }

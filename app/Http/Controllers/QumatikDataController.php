@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cursor;
 use App\Jobs\BuoyCreateJob;
-use App\Qumatik;
-use App\QumatikData;
-use FarhanWazir\GoogleMaps\GMaps;
+use App\Models\Qumatik;
+use App\Models\QumatikData;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Request;
 use Spatie\Dropbox\Client;
 
@@ -17,20 +18,42 @@ class QumatikDataController extends Controller{
      */
     public function index($imei){
         // AUTHENTICATE WITH DROPBOX
-        // $this->dispatch(new BuoyCreateJob($imei));
+//         $this->dispatch(new BuoyCreateJob($imei));
 
 
         $client = new Client(["fu65xsevq0k1zkj", "h4ys4vbczp1hpjd"]);
         $client = new Client('bShfayt_zd4AAAAAAAAAAURN6GZduPItQV_UkmoeFUwzTesqkp8-7xcNt-xbNkCM');
 
         // GET the exact qumatik information
-        $qumatik = Qumatik::where('imei', $imei)->first();
+        $qumatik = Qumatik::where("imei", $imei)->firstOrFail();
 
-        // LOOP THROUGH ALL THE QUMATIKS AND FETCH DATA FROM THAT FOLDER
+
         // FIND THE LIST OF FOLDERS
-        $folders = $client->listFolderContinue("AAFesj3XqCKS_yRmvePPWTA3cbURUw0ZsLbRjp-KJUUImrP7xcm3Jpmd13w6ULjhwyyhIy_VXIOYOdycotsjgz6nvcK9pkZKuVPd_91-OaXZ17wywswXkFNeYWYVZMQEgf0iYzwNeXwA4sogPjN40jsAc_2QP8PzTmI95NXxTB98LmgExMpOQmIJprva6xACaFXhLrfmdrYbd2zjXS5jsgCch-whP1oiqMX_mUC4q_tYq7LZTkUvwBuNvwsmXMNWTQqWvh4G5hmeBqsB0jPycXEbj6Qg5AaH-cw9XOVjxCzDOA");
-        dd($folders);
+        if (!Cursor::where('qumatik_id', $qumatik->id)->exists()){
+            $folders = $client->listFolder($qumatik->dropbox_dir);
+            dd(Cursor::create([
+                "entries"       =>  count($folders["entries"]),
+                "cursor"        =>  $folders["cursor"],
+                "qumatik_id"    =>  $qumatik->id,
+            ]));
+//            Cursor::create();
 
+
+        }else{
+            $cursor = Cursor::where('qumatik_id', $qumatik->id)->firstOrFail();
+            $folders = $client->listFolderContinue($cursor->cursor);
+
+            dd($folders);
+
+        }
+
+
+
+        dd("Done");
+
+
+
+        dd("Done");
 
         foreach ($folders['entries'] as $index => $folder){
             // fetch all the files in that folder

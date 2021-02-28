@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Data;
-use App\Summery;
+use App\Models\Data;
+use App\Models\Summery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use function Sodium\add;
 
 class DataController extends Controller{
 
@@ -66,7 +65,7 @@ class DataController extends Controller{
      * @return \Illuminate\Http\Response
      */
     public function show($buoyID){
-		
+
 		// Pending for Approvals
         $pendingsForApproval = DB::table('data')
                     ->where('buoy_id', $buoyID)

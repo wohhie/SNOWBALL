@@ -11,12 +11,12 @@ class QumatikSeeder extends Seeder
      */
     public function run(){
         //
-        \App\Qumatik::create([
+        \App\Models\Qumatik::create([
             'name'  =>  'Artic Bay',
             'dropbox_dir'   =>  '/Installations/Arcticbay/SmartQAMUTIK/incoming',
         ]);
 
-        \App\Qumatik::create([
+        \App\Models\Qumatik::create([
             'name'  =>  'Artic Bay',
             'dropbox_dir'   =>  '/Arviat/SmartQAMUTIK/',
         ]);

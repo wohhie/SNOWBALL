@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Qumatik;
+use App\Models\Qumatik;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redis;
 
@@ -11,7 +11,7 @@ class QumatikObserver
     /**
      * Handle the qumatik "created" event.
      *
-     * @param  \App\Qumatik  $qumatik
+     * @param  App\Models\Qumatik  $qumatik
      * @return void
      */
     public function created(Qumatik $qumatik){

@@ -19,7 +19,6 @@
   </ol>
 
 
-
     <div class="row">
         <div class="col-xs-12">
 
@@ -48,7 +47,9 @@
                         @forelse($buoys as $index=>$buoy)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td><b><a href="{{ URL('/email/'.$buoy['imei'] )}}">{{ $buoy['imei'] }}</a></b></td>
+                                <td>
+{{--                                    <b><a href="{{ URL('/email/'.$buoy['imei'] )}}">{{ $buoy['imei'] }}</a></b>--}}
+                                </td>
 								<td>{{ $buoy->community->name }}</td>
                                 <td>{{ $buoy->serialNo }}</td>
                                 <td>{{ $buoy->latitude }}</td>

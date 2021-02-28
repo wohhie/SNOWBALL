@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Events\BuoyCreated;
 use App\Events\BuoyDeleted;
@@ -20,11 +20,11 @@ class Buoy extends Model{
 
 
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function community(){
-        return $this->belongsTo('App\Community', 'communityID', 'id');
+        return $this->belongsTo('App\Models\Community', 'communityID', 'id');
     }
 
 

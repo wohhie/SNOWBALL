@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Buoy;
+use App\Models\Buoy;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;

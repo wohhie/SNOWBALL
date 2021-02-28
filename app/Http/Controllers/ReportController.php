@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Community;
+use App\Models\Community;
 use Illuminate\Http\Request;
 
 

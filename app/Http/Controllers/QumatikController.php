@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Community;
-use App\Qumatik;
+use App\Models\Community;
+use App\Models\Qumatik;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

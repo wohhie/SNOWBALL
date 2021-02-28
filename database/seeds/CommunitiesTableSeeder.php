@@ -12,10 +12,10 @@ class CommunitiesTableSeeder extends Seeder
     public function run(){
 
         // truncate table
-        \App\Community::truncate();
+        \App\Models\Community::truncate();
 
         // insert initial datas
-        \App\Community::insert([
+        App\Models\Community::insert([
             'name'          =>  'Nain',
             'latitude'      =>  '56.541683',
             'longitude'     =>  '-61.696888',
@@ -23,7 +23,7 @@ class CommunitiesTableSeeder extends Seeder
             'updated_at'    =>  date('Y-m-d H:i:s')
         ]);
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Pangnirtung',
             'latitude'      =>  '66.1464200',
             'longitude'     =>  '-65.6999600',
@@ -31,7 +31,7 @@ class CommunitiesTableSeeder extends Seeder
             'updated_at'    =>  date('Y-m-d H:i:s')
         ]);
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Qikiqtarjuaq',
             'latitude'      =>  '62.686669',
             'longitude'     =>  '-70.602425',
@@ -39,7 +39,7 @@ class CommunitiesTableSeeder extends Seeder
             'updated_at'    =>  date('Y-m-d H:i:s')
         ]);
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Cape Dorset',
             'latitude'      =>  '64.230375',
             'longitude'     =>  '-76.540963',
@@ -47,7 +47,7 @@ class CommunitiesTableSeeder extends Seeder
             'updated_at'    =>  date('Y-m-d H:i:s')
         ]);
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Sanikiluaq',
             'latitude'      =>  '56.540768',
             'longitude'     =>  '-79.22321',
@@ -55,7 +55,7 @@ class CommunitiesTableSeeder extends Seeder
             'updated_at'    =>  date('Y-m-d H:i:s')
         ]);
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Hall Beach',
             'latitude'      =>  '68.772735',
             'longitude'     =>  '-81.235208',
@@ -64,7 +64,7 @@ class CommunitiesTableSeeder extends Seeder
         ]);
 
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Igloolik',
             'latitude'      =>  '69.372505',
             'longitude'     =>  '-81.82465',
@@ -73,7 +73,7 @@ class CommunitiesTableSeeder extends Seeder
         ]);
 
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Gjoa Haven',
             'latitude'      =>  '68.635556',
             'longitude'     =>  '-95.849722',
@@ -82,7 +82,7 @@ class CommunitiesTableSeeder extends Seeder
         ]);
 
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Tuktoyaktuk',
             'latitude'      =>  '69.445358',
             'longitude'     =>  '-133.034181',
@@ -91,7 +91,7 @@ class CommunitiesTableSeeder extends Seeder
         ]);
 
 
-        \App\Community::insert([
+        \App\Models\Community::insert([
             'name'          =>  'Pond Inlet',
             'latitude'      =>  '72.700117',
             'longitude'     =>  '-77.958532',
