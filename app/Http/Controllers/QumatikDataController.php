@@ -25,7 +25,6 @@ class QumatikDataController extends Controller{
         // GET the exact qumatik information
         $qumatik = Qumatik::where("imei", $imei)->firstOrFail();
 
-
         // FIND THE LIST OF FOLDERS
         if (!Cursor::where('qumatik_id', $qumatik->id)->exists()){
             $folders = $client->listFolder($qumatik->dropbox_dir);
@@ -37,14 +36,19 @@ class QumatikDataController extends Controller{
 
 
         }else{
-            $cursor = Cursor::findOrFail($qumatik->id);
+
+            $cursor = Cursor::where('qumatik_id', $qumatik->id)->firstOrFail();
             $folders = $client->listFolderContinue($cursor->cursor);
+
 
             // Store updated cursor value
             $cursor->entries = count($folders["entries"]);
             $cursor->cursor = $folders["cursor"];
             $cursor->save();
         }
+
+        dd($folders);
+        dd("Done");
 
 
         if (count($folders["entries"]) > 0){

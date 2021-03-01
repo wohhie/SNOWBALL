@@ -69,6 +69,10 @@
                 </ul>
             </li>
 
+
+            <li><a href="{{ route('report.index') }}"><i class="fa fa-file"></i>Generate Report</a></li>
+
+
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-user"></i>
