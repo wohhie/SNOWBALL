@@ -139,17 +139,39 @@ class BuoyController extends Controller {
 
 
     public function summary($imei){
-		$currentDate = date("m");
+		$currentDate = date("m");   // march
+
+		// StartDate - EndDate <- user input
+
+
+        // fetch the data in between start - end  ( not more than 2/3 months)
+        // March 2021
+        // Error: March - April
+            // LIKE
+            // March
+            // lowest date - highest
+
+
+        // Display the data.
+
+
+
+
+
+
 
         $getMonths = [];
         foreach (range(1, 12) as $m) {
             $getMonths[] = date('F', mktime(0, 0, 0, $m, 1));
         };
 
+
         $summaries = Summery::where('imei', $imei)
             ->orderBy('rmcDate')
             ->groupBy('rmcDate')
             ->get(['rmcDate','ice_thickness']);
+
+
 
         $jsonData = [];
         foreach ($summaries as $summary){

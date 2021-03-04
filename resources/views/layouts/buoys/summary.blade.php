@@ -10,7 +10,7 @@
         .axis {
             font: 10px sans-serif;
         }
-		
+
 		.current-month-title {
             font-weight: bold;
             text-align: center;
@@ -139,6 +139,42 @@
                         <svg width="1100" height="500"></svg>
 						<h4 class="current-month-title" id="current-month-title"></h4>
 
+                        <div class="row">
+                            <form class="form-inline" id = "form1" method="">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="latitude">Start Date</label>
+
+                                    <div class='input-group date' id='datetimepicker1'>
+                                        <input type='text' class="form-control" id= 'datepicker1'/>
+                                        <span class="input-group-addon">
+                                                 <span class="glyphicon glyphicon-calendar"></span>
+                                                 </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="latitude">End Date</label>
+
+                                    <div class='input-group date' id='datetimepicker2'>
+                                        <input type='text' class="form-control" id = 'datepicker2'/>
+                                        <span class="input-group-addon">
+                                                 <span class="glyphicon glyphicon-calendar"></span>
+                                                 </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" id="btnSave" class="btn btn-success">Submit</button>
+                            </form>
+                        </div>
+
+
+
+                        <div class="responsive-plot" id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
                     </div>
                     <!-- /.box-body -->
                 </div>
@@ -164,25 +200,48 @@
     <script src="{{ asset('themes/admin/bower_components/fastclick/lib/fastclick.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('themes/admin/dist/js/demo.js') }}"></script>
+    <script src="{{ asset('themes/admin/bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
 
     <!-- Load in the d3 library -->
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 
     <script type="text/javascript">
-	
+
 		//var markers = new Array();
 		//markers = '[{"rmcDate":"010320","ice_thickness":64},{"rmcDate":"020320","ice_thickness":68},{"rmcDate":"030320","ice_thickness":68},{"rmcDate":"040320","ice_thickness":72},{"rmcDate":"050320","ice_thickness":76},{"rmcDate":"060320","ice_thickness":80},{"rmcDate":"070320","ice_thickness":80},{"rmcDate":"080320","ice_thickness":80},{"rmcDate":"090320","ice_thickness":80},{"rmcDate":"100320","ice_thickness":80},{"rmcDate":"110320","ice_thickness":64},{"rmcDate":"120320","ice_thickness":76}]'
 		//var data = JSON.parse(markers)
 		//console.log(data)
 		//renderGraph(data)
-		
-		
-		
+
+
+
 		var markers = new Array();
 		markers = @json($json);
 		var data = JSON.parse(markers)
 		console.log(data);
 		renderGraph(data)
+        renderGraph2(data);
+
+        $(function () {
+            $('#datetimepicker1').datepicker({
+                "autoclose": true,
+                });
+
+
+        });
+        $(function () {
+            $('#datetimepicker2').datepicker({
+                "autoclose": true,
+                });
+        });
+        $('#btnSave').click(function (){
+
+                //console.log($("#datepicker1").val());
+                renderGraph3(data,$("#datepicker1").val(),$("#datepicker2").val());
+
+            }
+        )
 
 
         $(document).ready(function() {
@@ -190,7 +249,7 @@
                 var date = new Date(Date.parse(mon +" 1, 2012")).getMonth()+1
                 return date
             }
-			
+
 			var month = $("#months").val()
             var year = $("#years").val()
             $("#current-month-title").html(month + " - " + year)
@@ -225,6 +284,7 @@
                     success: function (data) {
 						$("#current-month-title").html(bottomTitle)
 						renderGraph(data)
+                        renderGraph2(data)
                     },
                     error: function (data) {
                         var errors = $.parseJSON(data.responseText)
@@ -363,7 +423,7 @@
 				.datum(data)
 				.attr("class", "line")
 				.attr("d", line);
-				
+
 				// text label for the y axis
             svg.append("text")
                 .attr("transform", "rotate(-90)")
@@ -442,8 +502,129 @@
 
 		}
 
+		function renderGraph2(data){
 
-        
+
+            var date = [];
+            var date2 = [];
+            var ice_thickness = [];
+
+            data.forEach(function(d, i) {
+                ice_thickness.push(d.ice_thickness)
+                date.push(convert(d.rmcDate));
+                date2.push(convert2(d.rmcDate));
+            });
+
+           // console.log(date);
+            $('#datetimepicker2').datepicker('update', date2[date2.length - 1]);
+            $('#datetimepicker1').datepicker('update', date2[0])
+
+
+
+
+            function  convert(str) {
+                var date = new Date(str),
+                    mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                    day = ("0" + date.getDate()).slice(-2);
+                return [date.getFullYear(), mnth, day].join("-");
+            }
+
+            function  convert2(str) {
+                var date = new Date(str),
+                    mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                    day = ("0" + date.getDate()).slice(-2);
+                return [ mnth,day, date.getFullYear()].join("-");
+            }
+
+            var data = [
+                {
+                    x: date,
+                    y: ice_thickness,
+                    type: 'scatter'
+                }
+            ];
+
+            var layout = {
+                title:'Ice Thickness',
+                xaxis: {
+                    range: [date[0], date[date.length -1]],
+                    type: 'date',
+                    title: 'Date'
+                },
+                yaxis:{
+                    title:'Thickness (cm)'
+                }
+            };
+
+            Plotly.newPlot('myDiv', data, layout);
+
+        }
+
+
+        function renderGraph3(data,datepicker1, datepicker2){
+
+            datepicker1 = datepicker1.replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2")
+            datepicker2 = datepicker2.replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2")
+
+            var date = [];
+            var date2 = [];
+            var ice_thickness = [];
+
+            data.forEach(function(d, i) {
+                ice_thickness.push(d.ice_thickness)
+                date.push(convert(d.rmcDate));
+                date2.push(convert2(d.rmcDate));
+            });
+
+            if(date.includes(datepicker1) && date.includes(datepicker2))
+            {
+                var data = [
+                    {
+                        x: date,
+                        y: ice_thickness,
+                        type: 'scatter'
+                    }
+                ];
+
+                var layout = {
+                    title:'Ice Thickness',
+                    xaxis: {
+                        range: [datepicker1, datepicker2],
+                        type: 'date',
+                        title: 'Date'
+                    },
+                    yaxis:{
+                        title:"Thickness (cm)"
+                    }
+                };
+
+                Plotly.newPlot('myDiv', data, layout);
+            }
+            else {
+                window.alert("Please select a date between: "+date2[0] +" and: "+date2[date2.length -1]);
+            }
+
+
+            function  convert(str) {
+                var date = new Date(str),
+                    mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                    day = ("0" + date.getDate()).slice(-2);
+                return [date.getFullYear(), mnth, day].join("-");
+            }
+
+            function  convert2(str) {
+                var date = new Date(str),
+                    mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+                    day = ("0" + date.getDate()).slice(-2);
+                return [ mnth,day, date.getFullYear()].join("-");
+            }
+
+
+
+        }
+
+
+
 
 
 
