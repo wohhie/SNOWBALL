@@ -140,13 +140,16 @@
 						<h4 class="current-month-title" id="current-month-title"></h4>
 
                         <div class="row">
-                            <form class="form-inline" id = "form1" method="">
+                            <form class="form-inline" method="POST" action="{{ route('buoys.summary2') }}">
+                                @csrf
+
+                                <input type="hidden" name="imei2" id="imei" value="{{ $imei }}">
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     <label for="latitude">Start Date</label>
 
                                     <div class='input-group date' id='datetimepicker1'>
-                                        <input type='text' class="form-control" id= 'datepicker1'/>
+                                        <input type='text' class="form-control" name="startdate" id= 'datepicker1'/>
                                         <span class="input-group-addon">
                                                  <span class="glyphicon glyphicon-calendar"></span>
                                                  </span>
@@ -161,14 +164,14 @@
                                     <label for="latitude">End Date</label>
 
                                     <div class='input-group date' id='datetimepicker2'>
-                                        <input type='text' class="form-control" id = 'datepicker2'/>
+                                        <input type='text' class="form-control" name="enddate" id = 'datepicker2'/>
                                         <span class="input-group-addon">
                                                  <span class="glyphicon glyphicon-calendar"></span>
                                                  </span>
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" id="btnSave" class="btn btn-success">Submit</button>
+                            <button type="submit" id="btnSave" class="btn btn-success">Submit</button>
                             </form>
                         </div>
 
@@ -219,7 +222,7 @@
 		var markers = new Array();
 		markers = @json($json);
 		var data = JSON.parse(markers)
-		console.log(data);
+		//console.log(data);
 		renderGraph(data)
         renderGraph2(data);
 
@@ -245,6 +248,8 @@
 
 
         $(document).ready(function() {
+
+
             function getMonthFromString(mon){
                 var date = new Date(Date.parse(mon +" 1, 2012")).getMonth()+1
                 return date
@@ -264,6 +269,33 @@
                 }
             })
 
+            $.ajaxSetup({
+                header: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            })
+
+
+            $.ajax({
+                url:"{{ route('buoys.summary2') }}",
+                method:"POST",
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+
+                success:function(data)
+                {
+
+                    console.log(data);
+                },
+                error: function (data) {
+                    var errors = $.parseJSON(data.responseText)
+                    console.log(errors)
+
+                }
+            });
+
             $("#btn-submit").click(function(event) {
                 // getting the value
                 var tempMonth = $("#months").val()
@@ -271,11 +303,7 @@
                 var year = $("#years").val()
                 var imei = $("#imei").val()
 
-                $.ajaxSetup({
-                    header: {
-                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                    }
-                })
+
 
                 $.ajax({
                     type: 'GET',
@@ -517,7 +545,7 @@
 
            // console.log(date);
             $('#datetimepicker2').datepicker('update', date2[date2.length - 1]);
-            $('#datetimepicker1').datepicker('update', date2[0])
+            $('#datetimepicker1').datepicker('update', date2[0]);
 
 
 

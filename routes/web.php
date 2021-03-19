@@ -53,6 +53,10 @@ Route::resource('communities', 'CommunityController')->middleware('auth');
 
 Route::get('/buoy/summary/{id}', 'BuoyController@summary');
 Route::get('/buoy/summary/{imei}/{month}/{year}', 'BuoyController@updateSummary');
+
+
+Route::post('summary2', 'BuoyController@summary2')->name("buoys.summary2");
+
 // Data
 Route::resource('datas', 'DataController');
 

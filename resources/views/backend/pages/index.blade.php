@@ -22,6 +22,15 @@
           href="{{ asset('themes/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css') }}">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="{{ asset('themes/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
+    <style>
+
+        .map {
+            height: 600px;
+            width: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+    </style>
 @endsection
 
 @section('bodyClass')class="hold-transition skin-blue sidebar-mini"@endsection
@@ -106,6 +115,7 @@
 
 
     <div class="row">
+
         <div class="col-xs-12">
 
             <div class="box">
@@ -209,45 +219,51 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($qumatiks as $index => $qumatik)
-                                            @if($qumatik->status == 1)
-                                                <tr>
-                                                    <td>{{ ++$index }}</td>
-                                                    <td>
-                                                        <b><a href="{{ route('qumatikdata.show', $qumatik->id) }}">{{ $qumatik->imei}}</a></b>
-                                                    </td>
-                                                    <td>{{ $qumatik->community['name'] }}</td>
-
-                                                    <td><span
-                                                            class="label label-{{ ($qumatik->status == 0) ? 'danger' : 'success' }}">{{ ($qumatik->status == 0) ? 'Inactive' : 'active' }}</span>
-                                                    </td>
-
-                                                    <td></td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <a href="/individual" class="btn btn-sm btn-primary"><i
-                                                                    class="fa fa-eye"></i></a>
-                                                            <a href="/map" class="btn btn-sm btn-success"><i
-                                                                    class="fa fa-list-ul"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endif
-
-
-                                        @empty
+                                    @forelse($qumatiks as $index => $qumatik)
+                                        @if($qumatik->status == 1)
                                             <tr>
-                                                <td colspan="8"><b>
-                                                        <center>No information found.</center>
-                                                    </b></td>
+                                                <td>{{ ++$index }}</td>
+                                                <td>
+                                                    <b><a href="{{ route('qumatikdata.show', $qumatik->id) }}">{{ $qumatik->imei}}</a></b>
+                                                </td>
+                                                <td>{{ $qumatik->community['name'] }}</td>
+
+                                                <td><span
+                                                        class="label label-{{ ($qumatik->status == 0) ? 'danger' : 'success' }}">{{ ($qumatik->status == 0) ? 'Inactive' : 'active' }}</span>
+                                                </td>
+
+                                                <td></td>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a href="/individual" class="btn btn-sm btn-primary"><i
+                                                                class="fa fa-eye"></i></a>
+                                                        <a href="/map" class="btn btn-sm btn-success"><i
+                                                                class="fa fa-list-ul"></i></a>
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        @endforelse
+                                        @endif
+
+
+                                    @empty
+                                        <tr>
+                                            <td colspan="8"><b>
+                                                    <center>No information found.</center>
+                                                </b></td>
+                                        </tr>
+                                    @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                     <!-- /.nav-tabs-custom -->
+
+                    <!-- Google Map -->
+
+                    <div class="map" id="map" ></div>
+
+
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -307,6 +323,12 @@
 
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('themes/admin/dist/js/demo.js') }}"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvAoYI_rnWiNJUpta8_heKO-CHSp18HLQ&libraries=&v=3.exp&sensor=false"
+
+    ></script>
+
+
 
     <!-- page script -->
     <script>
@@ -325,9 +347,123 @@
 
         })
 
-
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
+
+        var buoys = {!! json_encode($buoys->toArray()) !!};
+        var qumatiks = {!! json_encode($qumatiks->toArray()) !!};
+        var buoyCommunity = [];
+        var squmatikCommunity = [];
+        var buoysLatLang = [];
+        var buoysCommunityNames = [];
+        var squmatikLatLang = [];
+        var squmatikCommunityNames = [];
+
+
+        for(i = 0; i<buoys.length ; i++){
+
+            if(buoys[i].status == 1)
+            buoyCommunity.push(buoys[i].community);
+
+        }
+
+        for(i = 0; i<qumatiks.length ; i++){
+
+            if(qumatiks[i].status == 1)
+                squmatikCommunity.push(qumatiks[i].community);
+        }
+
+      for(i = 0 ; i< buoyCommunity.length ; i++){
+
+          buoysLatLang.push({lat : parseFloat(buoyCommunity[i].latitude),lng:parseFloat(buoyCommunity[i].longitude)});
+          buoysCommunityNames.push(buoyCommunity[i].name)
+
+      }
+        for(i = 0 ; i< squmatikCommunity.length ; i++){
+
+            squmatikLatLang.push({lat : parseFloat(squmatikCommunity[i].latitude),lng:parseFloat(squmatikCommunity[i].longitude)});
+            squmatikCommunityNames.push(squmatikCommunity[i].name)
+
+        }
+
+        // const gMap = new google.maps.Map(document.getElementById("map"));
+        //
+        // navigator.geolocation.getCurrentPosition(function(position) {
+        //     // Center on user's current location if geolocation prompt allowed
+        //     var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        //     gMap.setCenter(initialLocation);
+        //     gMap.setZoom(13);
+        // }, function(positionError) {
+        //     // User denied geolocation prompt - default to Chicago
+        //     gMap.setCenter(new google.maps.LatLng(39.8097343, -98.5556199));
+        //     gMap.setZoom(5);
+        // });
+
+
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: buoysLatLang[0],
+                mapTypeId: 'terrain'
+            });
+            for (i = 0 ; i< buoysLatLang.length; i++){
+                new google.maps.Marker({
+                    position: buoysLatLang[i],
+                    map,
+                    title: buoysCommunityNames[i],
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 12,
+                        fillColor: "#FF0000",
+                        fillOpacity: 0.4,
+                        strokeWeight: 0.4
+                    },
+                });
+            }
+        for (i = 0 ; i< squmatikLatLang.length; i++){
+            new google.maps.Marker({
+                position: squmatikLatLang[i],
+                map,
+                title: squmatikCommunityNames[i],
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 12,
+                    fillColor: "#008000",
+                    fillOpacity: 0.4,
+                    strokeWeight: 0.4
+                },
+            });
+        }
+
+
+
+
+            // Define the LatLng coordinates for the polygon's path.
+
+
+            // Construct the polygon.
+        //     var buoysTriangle = new google.maps.Polygon({
+        //         paths: buoysLatLang,
+        //         strokeColor: '#FF0000',
+        //         strokeOpacity: 0.8,
+        //         strokeWeight: 2,
+        //        // fillColor: '#FF0000',
+        //         fillOpacity: 0.35
+        //     });
+        // buoysTriangle.setMap(map);
+        //
+        // var squmatikTriangle = new google.maps.Polygon({
+        //     paths: squmatikLatLang,
+        //     strokeColor: '#008000',
+        //     strokeOpacity: 0.8,
+        //     strokeWeight: 2,
+        //     // fillColor: '#FF0000',
+        //     fillOpacity: 0.35
+        // });
+        // squmatikTriangle.setMap(map);
+
+
     </script>
+
 @endsection

@@ -109,6 +109,7 @@ class BuoyController extends Controller {
         return view('layouts.buoys.edit', compact('communities', 'buoy'));
     }
 
+
     /**
      * Update the specified resource in storage.
      *
@@ -136,25 +137,39 @@ class BuoyController extends Controller {
     }
 
 
+    public function summary2(Request $request){
+
+        $imei = $request->imei2;
+
+        // Display the data.
+        $summaries2 = Summery::where('imei', $imei)
+            ->orderBy('rmcdatetime')
+            ->groupBy('rmcdatetime')
+            ->get(['rmcdatetime','ice_thickness']);
+
+        $jsonData2 = [];
+        $dates = [];
+        $ice_thickness = [];
+        foreach ($summaries2 as $summary){
+
+            $date = explode(" ",$summary->rmcdatetime);
+            array_push($dates,$date[0]);
+            array_push($ice_thickness,(int) $summary->ice_thickness);
+
+
+        }
+       // dd($request->startdate);
+        //dd($dates,$ice_thickness);
+        return   \Response::json($dates); ;
+
+
+
+    }
+
 
 
     public function summary($imei){
 		$currentDate = date("m");   // march
-
-		// StartDate - EndDate <- user input
-
-
-        // fetch the data in between start - end  ( not more than 2/3 months)
-        // March 2021
-        // Error: March - April
-            // LIKE
-            // March
-            // lowest date - highest
-
-
-        // Display the data.
-
-
 
 
 
