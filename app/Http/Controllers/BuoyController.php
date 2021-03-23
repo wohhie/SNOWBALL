@@ -141,19 +141,15 @@ class BuoyController extends Controller {
     public function summary($imei){
 		$currentDate = date("m");   // march
 
-		// StartDate - EndDate <- user input
+        // userinput: startDate - endDate (01-01-2020 - 14-01-2020)
+        // from the summaryTable fetch only those data
+        // display into plotly
 
 
-        // fetch the data in between start - end  ( not more than 2/3 months)
-        // March 2021
-        // Error: March - April
-            // LIKE
-            // March
-            // lowest date - highest
-
-
-        // Display the data.
-
+        // last 7 day
+        // last 2 weeks
+        // last 1 month <- sloved
+        // select the range (startdate and enddate) 
 
 
 

@@ -163,7 +163,8 @@
 
                                                     <div class="map" id="map_{{ $data->id }}"></div>
 
-
+                                                    <br/>
+                                                    <br/>
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-danger">Delete Now</button>
                                                 </div>
@@ -286,7 +287,7 @@
 
                     document.getElementById("time_"+ id).innerHTML = start+start_time+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+end+end_time+"\n" +hour+Hours+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+minute +Minutes;
 
-                    document.getElementById("mini_ice_"+ id).innerHTML = min+min_ice_thickness + "&nbsp &nbsp&nbsp&nbsp"+max+max_ice_thickness;
+                    document.getElementById("mini_ice_"+ id).innerHTML = min+min_ice_thickness + " (cm)" + "&nbsp &nbsp&nbsp&nbsp"+max+max_ice_thickness + " (cm)";
                     // check the camera zoom
 
                     const coordinates = JSON.parse(response)

@@ -35,7 +35,7 @@
                             <div class="box-body">
 
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-2">
                                         <div class="form-group">
                                             <label for="name">Location </label>
                                             <select class="form-control" required name="locationID">
@@ -49,9 +49,9 @@
 
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label for="latitude">Date</label>
+                                            <label for="latitude">Start Date</label>
 
                                             <div class='input-group date' id='datetimepicker1'>
                                                 <input type='text' class="form-control"/>
@@ -63,7 +63,21 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label for="latitude">End Date</label>
+
+                                            <div class='input-group date' id='datetimepicker2'>
+                                                <input type='text' class="form-control"/>
+                                                <span class="input-group-addon">
+                                                 <span class="glyphicon glyphicon-calendar"></span>
+                                                 </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-primary" style="margin-top: 25px">
                                                 Submit
@@ -86,6 +100,7 @@
 
                         </div>
                             <div class="box-body">
+                                <a href="#" class="btn btn-primary btn-right">Download</a>
                                     <table id="example1" class="table table-bordered table-striped">
 
                                         <thead>
@@ -145,6 +160,7 @@
     <script type="text/javascript">
         $(function () {
             $('#datetimepicker1').datepicker();
+            $('#datetimepicker2').datepicker();
         });
     </script>
 
